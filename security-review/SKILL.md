@@ -5,77 +5,77 @@ description: Security review for generated code. Three layers — pattern warnin
 
 # Security Review
 
-Security review untuk semua kode yang dihasilkan. Tiga layer:
+Security review for all generated code. The process consists of three layers:
 
-1. **Pattern warnings** — instant inline checks saat menulis kode untuk pola berbahaya (unsafe deserialization, hardcoded secrets, XSS, dll.)
-2. **LLM diff review** — setelah selesai menulis kode, review seluruh diff dengan security lens sebelum dikirim ke user
-3. **Cross-file data flow** — telusuri aliran data input user melintasi file untuk mendeteksi kerentanan multi-file (IDOR, auth bypass, SSRF)
+1. **Pattern warnings** — Instant inline checks during coding for dangerous patterns (unsafe deserialization, hardcoded secrets, XSS, etc.).
+2. **LLM diff review** — Comprehensive diff review with a security lens after coding is complete, prior to delivery.
+3. **Cross-file data flow** — Data flow analysis of user input across files to detect multi-file vulnerabilities (IDOR, auth bypass, SSRF).
 
 <HARD-GATE>
-JANGAN kirim kode yang menyentuh autentikasi, otorisasi, input user, file upload, API endpoints, atau database tanpa menjalankan ketiga layer security review di atas. Ini MUTLAK.
+DO NOT deliver code touching authentication, authorization, user input, file uploads, API endpoints, or databases without running the three layers of security review above. This is MANDATORY.
 </HARD-GATE>
 
-## Layer 1 — Pattern Warnings (Saat Menulis)
+## Layer 1 — Pattern Warnings (During Development)
 
-Periksa setiap blok kode yang ditulis untuk pola berbahaya berikut. Jika ketemu, hentikan dan perbaiki sebelum lanjut:
+Inspect every code block for the following dangerous patterns. If found, halt and rectify before continuing:
 
-| Pola | Tindakan |
-|------|----------|
-| `pickle.load` tanpa kontrol sumber data | BLOCKED |
-| `torch.load(weights_only=False)` | BLOCKED — pakai `weights_only=True` |
-| `yaml.load` tanpa `SafeLoader` | BLOCKED — pakai `yaml.safe_load` |
-| `eval()` / `exec()` dengan input user | BLOCKED |
-| `innerHTML` / `dangerouslySetInnerHTML` dengan konten user | BLOCKED — pakai `textContent` atau DOMPurify |
-| API key, token, password hardcoded | BLOCKED — pakai env vars |
-| SQL concat dengan input user (`f"SELECT {x}"`) | BLOCKED — pakai parameterized query |
-| `subprocess` / `os.system` dengan argumen user | BLOCKED — validasi ketat |
+| Pattern | Action |
+|---|---|
+| `pickle.load` without source control | BLOCKED |
+| `torch.load(weights_only=False)` | BLOCKED — use `weights_only=True` |
+| `yaml.load` without `SafeLoader` | BLOCKED — use `yaml.safe_load` |
+| `eval()` / `exec()` with user input | BLOCKED |
+| `innerHTML` / `dangerouslySetInnerHTML` with user content | BLOCKED — use `textContent` or DOMPurify |
+| API keys, tokens, hardcoded passwords | BLOCKED — use environment variables |
+| SQL concatenation with user input (`f"SELECT {x}"`) | BLOCKED — use parameterized queries |
+| `subprocess` / `os.system` with user arguments | BLOCKED — strict validation required |
 
-## Layer 2 — LLM Diff Review (Setelah Selesai)
+## Layer 2 — LLM Diff Review (Post-Development)
 
-Setelah selesai menulis kode untuk suatu fitur, lakukan review menyeluruh:
+Perform a comprehensive review after completing a feature:
 
-1. Baca `SECURITY_RULES.md` untuk rules lengkap
-2. Review setiap file yang dimodifikasi — cari injection, XSS, hardcoded secrets, path traversal
-3. Verifikasi autentikasi — setiap endpoint punya guard?
-4. Verifikasi otorisasi — user hanya bisa akses resource miliknya? (cegah IDOR)
-5. Cek input validation — tiap input user tervalidasi di boundary API?
-6. Cek secrets — tidak ada credentials di kode/komentar/log?
-7. Lapor temuan — jika ada BLOCKED, perbaiki dulu. Jika WARN, tulis penjelasan kenapa aman.
-8. Baru deliver ke user setelah semua bersih.
+1. Consult `SECURITY_RULES.md` for complete rules.
+2. Review every modified file — scan for injection, XSS, hardcoded secrets, and path traversal.
+3. Verify authentication — does every endpoint have a guard?
+4. Verify authorization — does the user only access their own resources? (Prevent IDOR).
+5. Check input validation — is every user input validated at the API boundary?
+6. Check secrets — ensure no credentials in code, comments, or logs.
+7. Report findings — fix all BLOCKED items; document rationale for all WARN items.
+8. Deliver to user only after the code is verified clean.
 
 ## Layer 3 — Cross-File Data Flow
 
-Untuk fitur yang kompleks (multi-file, melibatkan auth/user input):
+For complex features (multi-file, involving auth/user input):
 
-1. Identifikasi entry point (endpoint API, handler, webhook)
-2. Trace aliran data dari entry point ke database/file system/response
-3. Di setiap titik, cek:
-   - Apakah autentikasi sudah diverifikasi?
-   - Apakah otorisasi sudah diverifikasi (user punya akses ke resource ini)?
-   - Apakah input sudah divalidasi (tipe, panjang, format)?
-   - Apakah output sudah di-escape untuk konteksnya (HTML, JSON, SQL)?
-4. Catat kelemahan yang ditemukan dan perbaiki
+1. Identify entry points (API endpoints, handlers, webhooks).
+2. Trace the data flow from entry point to database/file system/response.
+3. At each point, verify:
+   - Authentication verified?
+   - Authorization verified (does the user have access to this resource)?
+   - Input validated (type, length, format)?
+   - Output escaped for context (HTML, JSON, SQL)?
+4. Document and remediate all weaknesses discovered.
 
-## Checklist — Harus Diikuti Urut
+## Mandatory Checklist
 
 ```markdown
-- [ ] Layer 1: pattern scan selesai, tidak ada BLOCKED
-- [ ] Layer 2: diff review selesai, semua temuan diatasi
-- [ ] Layer 3: data flow trace selesai (jika kompleks)
-- [ ] SECURITY_RULES.md sudah dirujuk
-- [ ] Semua BLOCKED diperbaiki, semua WARN didokumentasikan
-- [ ] Kode siap dideliver
+- [ ] Layer 1: Pattern scan complete, no BLOCKED items
+- [ ] Layer 2: Diff review complete, all findings addressed
+- [ ] Layer 3: Data flow trace complete (if complex)
+- [ ] SECURITY_RULES.md consulted
+- [ ] All BLOCKED items rectified, all WARN items documented
+- [ ] Code ready for delivery
 ```
 
-## Red Flags — Berhenti dan Perbaiki
+## Red Flags — Halt and Rectify
 
-Jika menemukan salah satu dari ini, STOP dan perbaiki sebelum lanjut:
+If any of the following are found, STOP and remediate immediately before proceeding:
 
-- Hardcoded credentials di kode
-- Raw SQL concat dengan input user
-- Endpoint API tanpa autentikasi
-- IDOR — user A bisa akses data user B
-- `innerHTML` dengan konten user tanpa sanitasi
-- `pickle` / `yaml.load` dari sumber tidak tepercaya
-- File path dari user tanpa normalisasi
-- Stack trace atau debug info bocor ke response
+- Hardcoded credentials
+- Raw SQL concatenation with user input
+- API endpoint without authentication
+- IDOR (User A can access User B's data)
+- `innerHTML` with user content without sanitization
+- `pickle` / `yaml.load` from untrusted sources
+- File paths from user input without normalization
+- Stack traces or debug information leaked to responses

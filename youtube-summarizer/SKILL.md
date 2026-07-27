@@ -100,7 +100,7 @@ Halo Lae! Berikut summary video YouTube-nya:
 
 ---
 
-> ⚠️ *Summary berdasarkan automated transcript (mungkin ada sedikit error dari speech-to-text)*
+> ⚠️ *Summary based on the automated transcript (minor errors from speech-to-text conversion may occur)*
 ```
 
 ## Template Elements Explained

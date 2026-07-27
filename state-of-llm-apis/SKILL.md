@@ -1,46 +1,46 @@
 ---
 name: state-of-llm-apis
-description: Referensi database LLM API yang di-update otomatis tiap hari. Berisi spesifikasi, pricing, perbandingan model, changelog, dan jadwal deprecation dari semua major provider (OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta). Gunakan ketika user bertanya tentang detail model LLM tertentu, perbandingan harga, rekomendasi model, atau status deprecation.
+description: LLM API database reference updated daily. Contains specifications, pricing, model comparisons, changelogs, and deprecation schedules for major providers (OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta). Use when inquiring about specific model details, pricing comparisons, recommendations, or sunset schedules.
 ---
 
 # Skill: State of LLM APIs
 
-Skill ini menyediakan akses ke **living knowledge base** LLM API yang di-maintain otomatis oleh Model Tracker agent dari repo [janwilmake/state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis). Data di-update setiap hari dari official provider documentation.
+This skill provides access to a **living knowledge base** of LLM API specifications, maintained automatically by the Model Tracker agent from the [janwilmake/state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) repository. Data is updated daily from official provider documentation.
 
 ---
 
-## ⚡ Auto-Update Mechanism (WAJIB)
+## ⚡ Auto-Update Mechanism (MANDATORY)
 
-Setiap kali skill ini dipanggil (user nanya tentang model LLM), **WAJIB** jalankan auto-check ini **SEBELUM** baca data:
+Every time this skill is invoked (e.g., when the user asks about an LLM model), you **MUST** run this auto-check **BEFORE** reading the data:
 
 ```bash
-# 1. Baca timestamp update terakhir
+# 1. Read the last update timestamp
 LAST_UPDATE=$(cat ~/.pi/agent/skills/state-of-llm-apis/.last_update)
 NOW=$(date +%s)
 DIFF=$((NOW - LAST_UPDATE))
 
-# 2. Kalo udah > 24 jam (86400 detik), update dulu
+# 2. If > 24 hours (86400 seconds) have passed, update the data
 if [ $DIFF -gt 86400 ]; then
-  echo "Data udah >24 jam. Update dulu..."
+  echo "Data is older than 24 hours. Updating..."
   cd ~/.pi/agent/skills/state-of-llm-apis/data && git pull
   date +%s > ~/.pi/agent/skills/state-of-llm-apis/.last_update
   echo "✅ Data updated: $(date)"
 fi
 ```
 
-> **Aturan:** Jangan tanya user dulu. Langsung update otomatis kalo udah lebih dari 24 jam sejak `.last_update`.
+> **Policy:** Perform the update automatically if more than 24 hours have elapsed since `.last_update` without prompting the user.
 
 ---
 
-## 📁 Struktur Data
+## 📁 Data Structure
 
-Semua data ada di direktori: `~/.pi/agent/skills/state-of-llm-apis/data/`
+All data is stored in the directory: `~/.pi/agent/skills/state-of-llm-apis/data/`
 
-| File | Deskripsi |
+| File | Description |
 |---|---|
-| `comparison.md` | Side-by-side pricing & feature matrix semua major provider |
-| `changelog.md` | Chronological log perubahan harga, rilis model, deprecations |
-| `deprecated.md` | Sunset dates dan migration paths |
+| `comparison.md` | Side-by-side pricing & feature matrix across major providers |
+| `changelog.md` | Chronological log of price changes, model releases, and deprecations |
+| `deprecated.md` | Sunset dates and migration paths |
 | `models/openai.md` | OpenAI — GPT-5.x, o-series, GPT-4.1 |
 | `models/anthropic.md` | Anthropic — Claude Fable/Mythos/Opus/Sonnet/Haiku |
 | `models/google.md` | Google — Gemini 3.x, 2.5 series |
@@ -52,33 +52,33 @@ Semua data ada di direktori: `~/.pi/agent/skills/state-of-llm-apis/data/`
 
 ---
 
-## 🔍 Cara Pakai
+## 🔍 Usage Instructions
 
-### 1. Menjawab pertanyaan tentang model spesifik
+### 1. Inquiring about specific models
 
-Baca file model yang relevan:
+Read the relevant provider file:
 
 ```bash
-# Contoh: OpenAI
+# Example: OpenAI
 read ~/.pi/agent/skills/state-of-llm-apis/data/models/openai.md
 
-# Contoh: Anthropic  
+# Example: Anthropic  
 read ~/.pi/agent/skills/state-of-llm-apis/data/models/anthropic.md
 ```
 
-### 2. Perbandingan harga dan spesifikasi
+### 2. Pricing and specifications comparison
 
 ```bash
 read ~/.pi/agent/skills/state-of-llm-apis/data/comparison.md
 ```
 
-### 3. Tracking perubahan terbaru
+### 3. Tracking recent changes
 
 ```bash
 read ~/.pi/agent/skills/state-of-llm-apis/data/changelog.md
 ```
 
-### 4. Cek jadwal deprecation
+### 4. Checking deprecation schedules
 
 ```bash
 read ~/.pi/agent/skills/state-of-llm-apis/data/deprecated.md
@@ -86,7 +86,7 @@ read ~/.pi/agent/skills/state-of-llm-apis/data/deprecated.md
 
 ---
 
-## 📊 Quick Reference: File per Provider
+## 📊 Quick Reference: Files by Provider
 
 | Provider | File Path |
 |---|---|
@@ -104,9 +104,9 @@ read ~/.pi/agent/skills/state-of-llm-apis/data/deprecated.md
 
 ---
 
-## 🔄 Update Manual dari Terminal
+## 🔄 Manual Updates from Terminal
 
-Kalo mau update dari terminal langsung:
+To trigger a manual update directly from the terminal:
 
 ```bash
 update-llm-models
@@ -114,9 +114,9 @@ update-llm-models
 
 ---
 
-## 📝 Catatan Penting
+## 📝 Important Notes
 
-- **Last updated** timestamp ada di header setiap file — selalu cek ini untuk tau seberapa fresh datanya
-- Harga dalam USD per 1M token kecuali disebut lain
-- Status deprecation ada tanda ⚠️ atau ❌ di comparison.md
-- Provider coverage: OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta
+- **Last updated** timestamp is located in the header of each file — always check this for data freshness.
+- Prices are in USD per 1M tokens unless specified otherwise.
+- Deprecation statuses are marked with ⚠️ or ❌ in `comparison.md`.
+- Provider coverage: OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta.

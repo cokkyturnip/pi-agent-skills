@@ -11,22 +11,22 @@ This skill provides the operational framework for classifying, configuring, and 
 
 ## 0. 9router Config Tables (SQLite, default: ~/.9router/db/data.sqlite)
 
-Konfigurasi utama 9router tersimpan di database SQLite. Untuk melihat/set konfigurasi atau daftar model real-time, gunakan table ini:
+The primary configuration of 9router is stored in an SQLite database. To inspect, update configuration, or query the real-time model registry, query these tables:
 
-| Table                | Isi utama                                                                                                       | Penting untuk |
-|----------------------|---------------------------------------------------------------------------------------------------------------|---------------|
-| combos               | Definisi combo (name, kind/strategy, models array, created/updated)                                            | Daftar combo + routing |
-| kv                   | Key-value (scope=customModels: metadata/registrasi model, disabledModels: blacklist, scope lainnya: env/dev)  | Model registry, blacklist, misc |
-| providerConnections  | Data koneksi/provider (API key/jenis auth/status, id, priority, dsb)                                           | Provider aktif |
-| settings             | Dict JSON untuk env global/router, preferensi dan default                                                      | Setting global |
-| apiKeys              | API key, per provider, linked ke koneksi                                                                      | Kunci akses |
-| usageHistory         | Log pemakaian, untuk analitik/history                                                                         | History, debugging |
+| Table | Description | Primary Use Case |
+|---|---|---|
+| combos | Combo definitions (name, strategy/kind, models array, metadata) | Combo listing & fallback routing |
+| kv | Key-value store (scope=customModels: model metadata; scope=disabledModels: blacklist) | Model registry & blacklists |
+| providerConnections | Connection state, API endpoints, authentication keys, and priorities | Active providers |
+| settings | Global env/router preferences and defaults stored as JSON | Global settings |
+| apiKeys | Provider-specific API credentials mapped to connections | Access credentials |
+| usageHistory | Execution logs tracking successful and failed requests | History & debugging |
 
-Akses paling umum:
-- `combos` → daftar combo, strategi, model, meta-combo
-- `kv` (scope=customModels) → model yang diregistrasi/di-enable
-- `providerConnections` → status & urutan prioritas provider "aktif"
-- `settings` → global config
+Common access points:
+- `combos` → combo configurations, strategies, model lists, and meta-combos.
+- `kv` (scope=customModels) → registered and active models.
+- `providerConnections` → provider status and priority order.
+- `settings` → global configuration.
 
 ---
 
@@ -50,12 +50,13 @@ When determining which combo a model belongs to, use this **priority order** (Re
 
 ### Combo Deduplication Rules:
 - Always keep **latest** (most current) version or **N-1** (one version older).
-- **Tagging priority:** Prefer models with `cloud` over other tags (e.g., `latest` vs `cloud` → `cloud` wins).
-- **Cloud/latest priority:** If there is competition between `cloud`/`latest` and a detailed name (e.g., `256b`), keep `cloud`/`latest` first.
-- **Detailed naming rules:** Prefer `256b-cloud` over `256b` (if available).
-- **Same model multiple sizes:** Keep **two largest sizes** only, UNLESS a `cloud` tag exists (in which case, defer to tagged version).
-- **Cross-provider preservation:** Retain duplicate models with the same ID across different providers — redundancy improves routing resilience.
-- **Rename/Delete cascading:** If renaming or deleting a combo, immediately update all meta-combos and references to avoid dangling entries.
+- **Tagging priority**: Prefer models with `cloud` over other tags (e.g., `latest` vs `cloud` → `cloud` wins).
+- **Cloud/latest priority**: If there is competition between `cloud`/`latest` and a detailed name (e.g., `256b`), keep `cloud`/`latest` first.
+- **Detailed naming rules**: Prefer `256b-cloud` over `256b` (if available).
+- **Same model multiple sizes**: Keep **two largest sizes** only, UNLESS a `cloud` tag exists (in which case, defer to tagged version).
+- **Cross-provider redundancy**: Retain duplicate models with the same ID across different providers — redundancy improves routing resilience.
+- **Cascading updates**: If renaming or deleting a combo, immediately update all dependent meta-combos to prevent broken references.
+
 ---
 
 ## 2. Combo Creation SOP
@@ -88,90 +89,90 @@ sqlite3 ~/.9router/db/data.sqlite "UPDATE combos SET models='[\"Combo1\",\"Combo
 
 ## 3. Model Deletion SOP
 
-Model deletion melibatkan dua tahap: hapus dari registry (`kv`) dan hapus dari combo (`combos`). Kedua langkah harus dilakukan agar model benar-benar hilang dari routing.
+Model deletion involves a two-stage process: remove the model from the registry (`kv`) and remove the model from combo definitions (`combos`). Both steps must be performed to ensure the model is fully purged from routing.
 
 ### Step 1: Delete from kv (Provider Registry)
 ```sql
--- Hapus model dari registry
+-- Remove model from registry
 DELETE FROM kv WHERE key = 'provider/model-id' AND scope = 'customModels';
 
--- Verifikasi sudah tidak ada
+-- Verify removal
 SELECT * FROM kv WHERE key = 'provider/model-id';
 ```
 
 ### Step 2: Remove from Combos
 ```sql
--- Cari semua combo yang mengandung model tersebut
+-- Identify all combos containing the model
 SELECT id, name, models FROM combos WHERE models LIKE '%provider/model-id%';
 
--- Update combo: hapel model dari array JSON
--- Contoh: jika combo Deepseek-Code mengandung model yang akan dihapus
+-- Update combo: remove model from the JSON array
+-- Example: if "Deepseek-Code" combo contains the model to be deleted
 UPDATE combos SET models = '["model1","model2"]' WHERE id = 'combo-id';
 ```
 
-### Step 3: Update Meta-Combos (jika combo dihapus)
-Jika combo dihapus sepenuhnya, update meta-combos (`Chat`, `Coding`, `Thinking`) untuk menghapus referensi:
+### Step 3: Update Meta-Combos (if combo is deleted)
+If a combo is deleted entirely, update the meta-combos (`Chat`, `Coding`, `Thinking`) to remove the references:
 ```sql
--- Contoh: hapus Deepseek-Code dari meta-combo Coding
+-- Example: remove "Deepseek-Code" from the "Coding" meta-combo
 UPDATE combos SET models = '["Gemini-Code","Qwen3-Code",...]' WHERE name = 'Coding';
 ```
 
-### Verifikasi Akhir
+### Final Verification
 ```sql
--- Pastikan model tidak ada di kv
+-- Confirm model is absent from kv
 SELECT * FROM kv WHERE key LIKE '%model-id%';
 
--- Pastikan model tidak ada di combo manapun
+-- Confirm model is absent from all combos
 SELECT id, name FROM combos WHERE models LIKE '%model-id%';
 ```
 
-### Catatan Penting
-- **Model dari API Provider**: Model yang di-load otomatis dari API provider (NVIDIA, OpenRouter, dll) akan tetap muncul di UI provider meskipun sudah dihapus dari `kv` lokal. Untuk mencegah penggunaan, pastikan model juga dihapus dari semua combo.
-- **Cache UI**: Beberapa UI mungkin mem-cache daftar model. Clear cache atau restart layanan router setelah perubahan.
-- **Jangan lupa combo**: Hapus dari `kv` saja tidak cukup — model masih bisa dipilih via combo yang memuatnya.
+### Critical Notes
+- **API Provider Models**: Models loaded automatically from API providers (NVIDIA, OpenRouter, etc.) will remain visible in the provider UI even if removed from the local `kv`. To prevent routing selection, ensure they are removed from all active combos.
+- **UI Cache**: Some interfaces may cache the model list. Clear the cache or restart the router service after applying changes.
+- **Combo Cleanup**: Deleting from `kv` alone is insufficient — models remain selectable via combos that still include them.
 
 ---
 
 ## 4. Combo Audit (Health Check)
 
-Gunakan script `audit_combo.py` yang sudah disertakan di dalam direktori skill (`~/.pi/agent/skills/configure-9router/audit_combo.py`) untuk memeriksa status penggunaan semua model dalam sebuah combo (termasuk model nested di sub-combo).
+Use the `audit_combo.py` script located in the skill directory (`~/.pi/agent/skills/configure-9router/audit_combo.py`) to inspect the usage status of all models within a combo, including nested models in sub-combos.
 
-### Cara penggunaan:
+### Usage:
 ```bash
-python3 ~/.pi/agent/skills/configure-9router/audit_combo.py <NamaCombo>
+python3 ~/.pi/agent/skills/configure-9router/audit_combo.py <ComboName>
 ```
 
-### Contoh:
+### Examples:
 ```bash
 python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Coding
 python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Chat
 python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Thinking
 ```
 
-### Output:
-- **🟢 OK Models**: model yang pernah digunakan dan selalu sukses, dengan jumlah pemakaian dan waktu terakhir.
-- **🔴 Error Models**: model dengan record status selain `ok`, dengan jumlah kegagalan, waktu terakhir, dan pesan error (jika tersedia di kolom `meta`).
-- **⚪ Unused Models**: model yang ada di combo tapi belum pernah muncul di `usageHistory`.
+### Output Categories:
+- **🟢 OK Models**: Models that have been used successfully, including usage counts and last-used timestamps.
+- **🔴 Error Models**: Models with status records other than `ok`, detailing failure counts, last failure timestamps, and error messages (if available in the `meta` column).
+- **⚪ Unused Models**: Models present in a combo but never recorded in `usageHistory`.
 
-### Catatan Penting Audit:
-- Script membaca database default di `~/.9router/db/data.sqlite`.
-- Semua sub-combo ditelusuri secara rekursif.
-- Script sekarang memeriksa **DUA SUMBER ERROR**:
-  1. **`usageHistory`**: Mencatat transaksi yang berhasil (`status: 'ok'`). Error dari sini hanya muncul jika request benar-benar tercatat gagal di database.
-  2. **`providerConnections`**: Menyimpan **provider-level errors** termasuk model locks (model yang sementara dinonaktifkan karena error). Error seperti 402 (kredit habis), 429 (rate limit), 404 (entity tidak ditemukan), 500/502/503 (server error), dsb. tercatat di sini.
-- **PENTING**: Error yang terlihat di UI 9router biasanya berasal dari `providerConnections`, bukan `usageHistory`. Ini menjelaskan mengapa ada error di UI tetapi tidak ditemukan di log `usageHistory`.
-- Model yang terkunci (`modelLock_*`) akan terlihat di bagian `PROVIDER-LEVEL ERRORS` dalam output audit.
-- Audit ini berguna untuk:
-  - Membersihkan model-model yang tidak pernah dipakai.
-  - Mengidentifikasi model dengan tingkat kegagalan tinggi.
-  - Melihat error spesifik dari provider (kredit habis, timeout, rate limit, dll).
+### Audit Technical Details:
+- The script reads the default SQLite database path at `~/.9router/db/data.sqlite`.
+- Sub-combos are traversed recursively.
+- The script checks **TWO ERROR SOURCES**:
+  1. **`usageHistory`**: Records transactions with `status: 'ok'`. Errors here only appear if the request was definitively recorded as a failure in the database.
+  2. **`providerConnections`**: Stores **provider-level errors** including model locks (models temporarily disabled due to errors). Errors such as 402 (insufficient credits), 429 (rate limit), 404 (entity not found), 500/502/503 (server errors), etc., are tracked here.
+- **Note**: Errors observed in the 9router UI typically originate from `providerConnections`, not `usageHistory`. This clarifies why errors may appear in the UI while remaining absent from `usageHistory` logs.
+- Models locked (`modelLock_*`) appear under `PROVIDER-LEVEL ERRORS` in the audit output.
+- Audit utility objectives:
+  - Prune unused models.
+  - Identify models with high failure rates.
+  - Inspect provider-specific errors (insufficient credits, timeouts, rate limits).
 
-### Contoh Temuan Error:
-- **402**: Kredit/provider habis, perlu upgrade atau kurangi max_tokens.
-- **429**: Rate limit / daily free allocation exhausted.
-- **404**: Model tidak ditemukan di provider.
-- **500/502/503**: Server error / timeout / model sedang sibuk.
-- **modelLock_***: Model yang sementara dinonaktifkan karena error tersebut.
+### Common Error Codes:
+- **402**: Payment required / credits exhausted. Needs upgrade or max_token limit adjustments.
+- **429**: Rate limit or daily free allocation exhausted.
+- **404**: Model not found at provider.
+- **500/502/503**: Server error / timeout / model overloaded.
+- **modelLock_***: Models temporarily disabled due to the aforementioned errors.
 
 ---
 
@@ -200,7 +201,7 @@ python3 ~/.pi/agent/skills/configure-9router/restore.py -i /path/to/backup.json 
 
 ## 6. Routing Strategy (via settings table)
 
-> ⚠️ `combos.kind` column in SQLite is **NOT read by the router**. Routing strategy lives in `settings` table.
+> ⚠️ The `combos.kind` column in SQLite is **NOT read by the router**. Routing strategy lives in the `settings` table.
 
 ### Inventory Combo 9router (Current State)
 Total 21 combos active:
@@ -235,7 +236,7 @@ Total 21 combos active:
 
 ---
 
-## 5. `kind` (Routing Strategy) Values — **DEPRECATED/NOT USED**
+## 7. `kind` (Routing Strategy) Values — **DEPRECATED/NOT USED**
 
 > ⚠️ **CRITICAL DISCOVERY**: The `combos.kind` column in SQLite is **NOT read by the router**. It has no effect on routing behavior.
 
@@ -245,7 +246,7 @@ The **actual routing strategy** is stored in the **`settings`** table (JSON colu
 
 | Value | Behavior | Default? |
 |:---|:---|:---|
-| `"fallback"` | Tries model in order; falls to next on failure | ✅ **Yes — default when not set** |
+| `"fallback"` | Tries models in order; falls to next on failure | ✅ **Yes — default when not set** |
 | `"round-robin"` | Rotates evenly across all models each request | No — set manually |
 
 ### How to change strategy (must use settings table, NOT combos.kind):
@@ -263,7 +264,7 @@ Then update the JSON `comboStrategies` field with the desired `fallbackStrategy`
 
 ---
 
-## 6. Key Rules (ALWAYS FOLLOW)
+## 8. Key Rules (ALWAYS FOLLOW)
 
 1. **Suffix consistency**: All Model-* combos must use `-Chat`, `-Code`, or `-Thinking` suffix. No bare names.
 2. **Meta-combo alignment**: Meta-combos (`Chat`, `Coding`, `Thinking`) contain ONLY combo names with matching suffix. No mixed content.
