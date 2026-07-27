@@ -111,7 +111,7 @@ ls ~/.pi/agent/skills/
 
 | Skill | Description | Source |
 |-------|-------------|--------|
-| **[configure-9router](configure-9router/)** | 9router model combo management via SQLite — register/whitelist models, manage routing combos, blacklist models, audit usage. Backup automation, pre-edit hooks, inventory tracking. | **[9router](https://github.com/decolua/9router)** — [decolua](https://github.com/decolua) |
+| **[configure-9router](configure-9router/)** | 9router model combo management via SQLite — register/whitelist models, manage routing combos, blacklist models, audit usage. Backup automation, pre-edit hooks, inventory tracking. | **Original** (Built on [9router](https://9router.com) CLI) |
 | **[configure-pi](configure-pi/)** | Pi agent configuration backup & restore — settings, skills, auth, extensions. Machine migration tool. Independent from 9router config. | **Original** |
 | **[cleanup-sessions](cleanup-sessions/)** | Session cleanup — retains 20 most recent sessions per project, max 14 days. Keeps Pi lean. | **Original** |
 
