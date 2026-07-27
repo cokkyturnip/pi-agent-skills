@@ -1,3 +1,8 @@
+---
+name: readme
+description: Repository README with skill directory overview, installation guide, and credits for the Pi Agent Skills collection.
+---
+
 # 🧠 Pi Agent Skills
 
 A curated collection of modular skills for [Pi](https://github.com/earendil-works/pi) — an AI coding agent harness. Skills auto-activate when relevant tasks are detected.

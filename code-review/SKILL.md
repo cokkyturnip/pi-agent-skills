@@ -1,5 +1,6 @@
 ---
 name: code-review
+description: Production-ready code review methodology with 4-phase process, severity labeling (🔴/🟡/🟢), and 20+ language-specific guides for React, Vue, Angular, TypeScript, Python, Go, Rust, and more.
 ---
 
 # Code Review Skill
