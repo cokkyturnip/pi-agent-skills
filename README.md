@@ -6,6 +6,10 @@ A curated collection of modular skills for [Pi](https://github.com/earendil-work
 >
 > **Philosophy:** Modular, on-demand, progressive disclosure. No skill loads unless needed.
 
+This repository began as a personal inventory — tracking skills I had written myself or adapted from other open-source projects, all in one place to keep my Pi agent consistent across machines. Over time, it grew into a structured collection, and I realized it might help others too.
+
+The collection will keep evolving. Skills get added as needs arise, not because of a grand roadmap. If something here saves you time, that's the point.
+
 ---
 
 ## 📦 Installation
