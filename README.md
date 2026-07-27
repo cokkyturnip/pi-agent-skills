@@ -103,7 +103,7 @@ ls ~/.pi/agent/skills/
 
 | Skill | Description | Source |
 |-------|-------------|--------|
-| **[code-review](code-review/)** | Production-ready code review methodology — 4-phase process (Context → High-Level → Line-by-Line → Summary). Severity labeling (🔴 blocking / 🟡 important / 🟢 nit). 20+ language-specific guides (React, Vue, Angular, Svelte, Rust, TypeScript, Python, Go, Kotlin, Swift, PHP, C#, Flutter/Dart, and more). Cross-cutting guides for architecture, performance, security, N+1, XSS, SQL injection, error handling, async/concurrency. Progressive disclosure — language guides load on-demand. **Flutter/Dart reference adapted from [supergraph](https://github.com/supergraph) and [everything-openai-codex](https://github.com/everything-openai-codex) checklists.** | **[awesome-skills/code-review-skill](https://github.com/awesome-skills/code-review-skill)** |
+| **[code-review](code-review/)** | Production-ready code review methodology — 4-phase process (Context → High-Level → Line-by-Line → Summary). Severity labeling (🔴 blocking / 🟡 important / 🟢 nit). 20+ language-specific guides (React, Vue, Angular, Svelte, Rust, TypeScript, Python, Go, Kotlin, Swift, PHP, C#, Flutter/Dart, and more). Cross-cutting guides for architecture, performance, security, N+1, XSS, SQL injection, error handling, async/concurrency. Progressive disclosure — language guides load on-demand. **Flutter/Dart reference adapted from [datit309/supergraph](https://github.com/datit309/supergraph) and [mturac/everything-openai-codex](https://github.com/mturac/everything-openai-codex) checklists.** | **[awesome-skills/code-review-skill](https://github.com/awesome-skills/code-review-skill)** |
 | **[stop-slop](stop-slop/)** | AI writing pattern removal — eliminates predictable AI tells from prose. Pattern references for phrases, structures, and examples. Use for copywriting, summaries, proposals, editorial, and redaksi. | **[hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)** |
 | **[security-review](security-review/)** | Three-layer security review — Layer 1: pattern warnings (unsafe deserialization, XSS, hardcoded secrets, SQL injection, eval). Layer 2: LLM diff review. Layer 3: cross-file data flow tracing. HARD GATE for auth/user-input/database/file-upload/API code. | **Original** (Inspired by Anthropic's `security-guidance` plugin and `obra/superpowers` methodology) |
 
@@ -202,7 +202,7 @@ The following skills were created from scratch for this collection:
 
 ### Flutter/Dart Addition
 
-The `code-review/reference/flutter-dart.md` guide was added to this collection, adapted from the [supergraph Flutter review checklist](https://github.com/supergraph) and the [everything-openai-codex Flutter review guide](https://github.com/everything-openai-codex). It covers Dart 3, Flutter widgets, state management (BLoC, Riverpod, Provider, GetX, MobX, Signals), performance, accessibility, and security.
+The `code-review/reference/flutter-dart.md` guide was added to this collection, adapted from the [datit309/supergraph Flutter review checklist](https://github.com/datit309/supergraph) and the [mturac/everything-openai-codex Flutter review guide](https://github.com/mturac/everything-openai-codex). It covers Dart 3, Flutter widgets, state management (BLoC, Riverpod, Provider, GetX, MobX, Signals), performance, accessibility, and security.
 
 ---
 
