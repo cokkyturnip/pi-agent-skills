@@ -228,16 +228,23 @@ Common errors and solutions:
 
 ## Python Utility
 
-A Python script (`generate_schedule.py`) is provided in the skill directory for generating valid MS Project XML programmatically:
+A Python script (`generate_schedule.py`) is provided at `~/.claude/skills/project-schedule/scripts/generate_schedule.py` for generating valid MS Project XML programmatically:
 
 ```python
-# Usage example
+# Usage: cd ~/.claude/skills/project-schedule/scripts
+# Then run python3 generate_schedule.py or import:
 from generate_schedule import ProjectSchedule
 
 schedule = ProjectSchedule("My Project")
 schedule.add_task("Task 1", duration="P1D")
 schedule.add_task("Task 2", duration="P2D", predecessor="Task 1")
+schedule.add_holiday("New Year", "2026-01-01")
 schedule.save("schedule.xml")
+```
+
+**Run directly:**
+```bash
+cd ~/.claude/skills/project-schedule/scripts && python3 generate_schedule.py --name "My Project" --output schedule.xml
 ```
 
 ---
