@@ -1,0 +1,3 @@
+[submodule "state-of-llm-apis/data"]
+	path = state-of-llm-apis/data
+	url = https://github.com/janwilmake/state-of-llm-apis
