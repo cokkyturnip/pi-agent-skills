@@ -10,13 +10,13 @@ A curated collection of modular skills for [Pi](https://github.com/earendil-work
 
 ## 📦 Installation
 
-Lae bisa langsung clone repo ini ke folder `skills` Pi:
+Clone this repository directly into your Pi's skills directory:
 
 ```bash
 git clone https://github.com/cokkyturnip/pi-agent-skills ~/.pi/agent/skills
 ```
 
-Setelah itu, Pi akan otomatis mendeteksi semua skill di dalamnya.
+Pi will automatically detect and load all skills on startup.
 
 ### Per-Skill Dependencies
 
