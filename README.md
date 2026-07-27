@@ -10,13 +10,39 @@ A curated collection of modular skills for [Pi](https://github.com/earendil-work
 
 ## 📦 Installation
 
-Clone this repository directly into your Pi's skills directory:
+### Option A — Interactive Installer (Recommended)
+
+Pick only the skills you want via checkbox menu:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.sh)
+```
+
+Or clone first, then run:
+
+```bash
+git clone https://github.com/cokkyturnip/pi-agent-skills ~/pi-skills
+cd ~/pi-skills
+./install.sh
+```
+
+### Option B — Clone All
 
 ```bash
 git clone https://github.com/cokkyturnip/pi-agent-skills ~/.pi/agent/skills
 ```
 
-Pi will automatically detect and load all skills on startup.
+### Option C — Manual Copy
+
+Clone, then copy only what you need:
+
+```bash
+git clone https://github.com/cokkyturnip/pi-agent-skills /tmp/pi-skills
+cp -r /tmp/pi-skills/code-review ~/.pi/agent/skills/
+cp -r /tmp/pi-skills/stop-slop ~/.pi/agent/skills/
+# ... pick any subset
+rm -rf /tmp/pi-skills
+```
 
 ### Per-Skill Dependencies
 
