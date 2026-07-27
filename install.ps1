@@ -18,6 +18,8 @@ $ClaudeSkillDir = "$env:USERPROFILE\.claude\skills"
 
 $Mandatory = @("sync-upstream")
 
+$OurScripts = @("configure-pi", "configure-9router", "code-review", "youtube-summarizer", "sync-upstream", "project-schedule", "cleanup-sessions")
+
 $Skills = @(
   "banner-design",      "brand",             "cleanup-sessions"
   "code-review",        "configure-9router",  "configure-pi"
@@ -88,10 +90,10 @@ function Install-Skills($Src) {
           Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
         }
       }
-      # Copy scripts to Claude
+      # Copy scripts to Claude (hanya untuk skill kita)
       $scriptsSrc = Join-Path $srcPath "scripts"
       $scriptsDst = "$ClaudeSkillDir\$s\scripts"
-      if (Test-Path $scriptsSrc -and -not (Test-Path $scriptsDst)) {
+      if (Test-Path $scriptsSrc -and ($OurScripts -contains $s) -and -not (Test-Path $scriptsDst)) {
         New-Item -ItemType Directory -Path "$ClaudeSkillDir\$s" -Force | Out-Null
         Copy-Item -Path $scriptsSrc -Destination "$ClaudeSkillDir\$s\" -Recurse -Force
       }
@@ -115,10 +117,10 @@ function Install-Skills($Src) {
           Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
         }
       }
-      # Copy scripts to Claude (skip if exists)
+      # Copy scripts to Claude (hanya untuk skill kita)
       $scriptsSrc = Join-Path $srcPath "scripts"
       $scriptsDst = "$ClaudeSkillDir\$s\scripts"
-      if (Test-Path $scriptsSrc -and -not (Test-Path $scriptsDst)) {
+      if (Test-Path $scriptsSrc -and ($OurScripts -contains $s) -and -not (Test-Path $scriptsDst)) {
         New-Item -ItemType Directory -Path "$ClaudeSkillDir\$s" -Force | Out-Null
         Copy-Item -Path $scriptsSrc -Destination "$ClaudeSkillDir\$s\" -Recurse -Force
         Write-Host "  $(Write-Colored '✔' green) $s (scripts → ~/.claude/skills/$s/)"

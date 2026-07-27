@@ -21,11 +21,22 @@ Pick only the skills you want via checkbox menu:
 **Linux/macOS (bash):**
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.sh)
+
+> **⚠️ Skill upstream scripts** — Untuk skill dari upstream (brand, design, dll),
+> script eksekusinya (`scripts/`) tidak termasuk di repo ini.
+> Jalankan `sync-upstream` setelah instalasi untuk melengkapi:
+> ```bash
+> # sync-upstream akan meng-clone dan meng-copy scripts dari repo upstream
+> # Cek SKILL nya: ~/.pi/agent/skills/sync-upstream/SKILL.md
+> ```
 ```
 
 **Windows (PowerShell 5+ / 7+):**
 ```powershell
 iex (iwr -Uri https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.ps1).Content
+
+> **⚠️ Skill upstream scripts** — Sama seperti versi bash, jalankan `sync-upstream`
+> setelah instalasi untuk melengkapi script dari repo upstream.
 ```
 
 Or clone first, then run the script locally:

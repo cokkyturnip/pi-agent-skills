@@ -1,6 +1,13 @@
 # Local config & backups
 configure-9router/backup/
 
+# Upstream scripts — handled by sync-upstream, not tracked here
+brand/scripts/
+design/scripts/
+design-system/scripts/
+ui-styling/scripts/
+ui-ux-pro-max/scripts/
+
 # Git repos cloned inside skills (state-of-llm-apis data)
 **/.git/
 

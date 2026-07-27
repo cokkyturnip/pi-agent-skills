@@ -14,6 +14,9 @@ REPO_URL="https://github.com/cokkyturnip/pi-agent-skills"
 # sync-upstream wajib — selalu terinstall, tidak bisa di-uncheck
 MANDATORY=("sync-upstream")
 
+# Skill yang scripts/nya dari kita — upstream di-handle sync-upstream
+OUR_SCRIPTS=("configure-pi" "configure-9router" "code-review" "youtube-summarizer" "sync-upstream" "project-schedule" "cleanup-sessions")
+
 SKILLS=(
   "banner-design"     "brand"             "cleanup-sessions"
   "code-review"       "configure-9router"  "configure-pi"
@@ -79,7 +82,7 @@ do_install() {
         fi
       done
       shopt -u dotglob
-      if [[ -d "$src/$s/scripts" ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
+      if [[ -d "$src/$s/scripts" ]] && [[ " ${OUR_SCRIPTS[*]} " == *" $s "* ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
         mkdir -p "$CLAUDE_SKILL_DIR/$s"
         cp -r "$src/$s/scripts" "$CLAUDE_SKILL_DIR/$s/"
       fi
@@ -105,7 +108,7 @@ do_install() {
         fi
       done
       shopt -u dotglob
-      if [[ -d "$src/$s/scripts" ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
+      if [[ -d "$src/$s/scripts" ]] && [[ " ${OUR_SCRIPTS[*]} " == *" $s "* ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
         mkdir -p "$CLAUDE_SKILL_DIR/$s"
         cp -r "$src/$s/scripts" "$CLAUDE_SKILL_DIR/$s/"
       fi
