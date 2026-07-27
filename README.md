@@ -1,6 +1,7 @@
 ---
 name: readme
 description: Repository README with skill directory overview, installation guide, and credits for the Pi Agent Skills collection.
+disable-model-invocation: true
 ---
 
 # 🧠 Pi Agent Skills
