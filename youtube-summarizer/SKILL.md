@@ -20,7 +20,7 @@ This skill enables the agent to provide concise and structured summaries of YouT
 2. **URL Extraction**: Extract Video ID from the YouTube URL.
 3. **Hybrid Data Retrieval (Priority Order)**:
    - **Primary**: Use `pi-web-access` `fetch_content` tool. For YouTube it routes: Gemini Web (browser cookies, enabled via `~/.pi/web-search.json` `allowBrowserCookies: true`) → Gemini API → Perplexity. Gemini Web bypasses Free Tier API limits.
-   - **Fallback 1 (Local Python)**: Run `python3 engine/fetcher.py [video_id]` for a free, independent transcript retrieval via `youtube-transcript-api`.
+   - **Fallback 1 (Local Python)**: Run `python3 ~/.claude/skills/youtube-summarizer/scripts/fetcher.py [video_id]` for a free, independent transcript retrieval via `youtube-transcript-api`.
    - **Fallback 2 (User Consent)**: If both fail, ask the user for permission to use Ninerouter as a final resort.
 4. **Analysis**: Process the text to identify key themes, main arguments, and conclusions.
 5. **Formatting**: Present the summary based on user preference (e.g., bullet points with 2-3 sentences per point).

@@ -15,10 +15,10 @@ Works on **Windows, macOS, and Linux**.
 
 ```bash
 # Creates ~/Downloads/pi-backup-<timestamp>/
-python3 ~/.pi/agent/skills/configure-pi/backup.py
+python3 ~/.claude/skills/configure-pi/scripts/backup.py
 
 # Or specify output directory:
-python3 ~/.pi/agent/skills/configure-pi/backup.py -b /path/to/backup-dir
+python3 ~/.claude/skills/configure-pi/scripts/backup.py -b /path/to/backup-dir
 ```
 
 ---
@@ -31,10 +31,10 @@ python3 ~/.pi/agent/skills/configure-pi/backup.py -b /path/to/backup-dir
 # 3. Copy backup folder to new machine
 
 # 4. Restore:
-python3 ~/.pi/agent/skills/configure-pi/restore.py -b /path/to/pi-backup-<timestamp>
+python3 ~/.claude/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp>
 
 # Dry-run:
-python3 ~/.pi/agent/skills/configure-pi/restore.py -b /path/to/pi-backup-<timestamp> --dry-run
+python3 ~/.claude/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp> --dry-run
 ```
 
 Restore auto-runs `npm install` for packages declared in `settings.json`.
@@ -45,8 +45,8 @@ Restore auto-runs `npm install` for packages declared in `settings.json`.
 
 | File | Purpose |
 |------|---------|
-| `backup.py` | Exports `~/.pi/agent/` → timestamped folder |
-| `restore.py` | Imports backup folder → `~/.pi/agent/` |
+| `scripts/backup.py` | Exports `~/.pi/agent/` → timestamped folder |
+| `scripts/restore.py` | Imports backup folder → `~/.pi/agent/` |
 | `SKILL.md` | This documentation |
 
 ---

@@ -135,18 +135,18 @@ SELECT id, name FROM combos WHERE models LIKE '%model-id%';
 
 ## 4. Combo Audit (Health Check)
 
-Use the `audit_combo.py` script located in the skill directory (`~/.pi/agent/skills/configure-9router/audit_combo.py`) to inspect the usage status of all models within a combo, including nested models in sub-combos.
+Use the `audit_combo.py` script located in the skill directory (`~/.claude/skills/configure-9router/scripts/audit_combo.py`) to inspect the usage status of all models within a combo, including nested models in sub-combos.
 
 ### Usage:
 ```bash
-python3 ~/.pi/agent/skills/configure-9router/audit_combo.py <ComboName>
+python3 ~/.claude/skills/configure-9router/scripts/audit_combo.py <ComboName>
 ```
 
 ### Examples:
 ```bash
-python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Coding
-python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Chat
-python3 ~/.pi/agent/skills/configure-9router/audit_combo.py Thinking
+python3 ~/.claude/skills/configure-9router/scripts/audit_combo.py Coding
+python3 ~/.claude/skills/configure-9router/scripts/audit_combo.py Chat
+python3 ~/.claude/skills/configure-9router/scripts/audit_combo.py Thinking
 ```
 
 ### Output Categories:
@@ -183,18 +183,18 @@ Independent 9router backup/restore tools. Compatible with UI export/import.
 ### Backup
 ```bash
 # Creates ~/Downloads/9router-backup-<timestamp>.json
-python3 ~/.pi/agent/skills/configure-9router/backup.py
+python3 ~/.claude/skills/configure-9router/scripts/backup.py
 
 # Or specify output path:
-python3 ~/.pi/agent/skills/configure-9router/backup.py -b /path/to/backup.json
+python3 ~/.claude/skills/configure-9router/scripts/backup.py -b /path/to/backup.json
 ```
 
 ### Restore
 ```bash
-python3 ~/.pi/agent/skills/configure-9router/restore.py -i /path/to/backup.json
+python3 ~/.claude/skills/configure-9router/scripts/restore.py -i /path/to/backup.json
 
 # Dry-run:
-python3 ~/.pi/agent/skills/configure-9router/restore.py -i /path/to/backup.json --dry-run
+python3 ~/.claude/skills/configure-9router/scripts/restore.py -i /path/to/backup.json --dry-run
 ```
 
 ---
@@ -272,7 +272,7 @@ Then update the JSON `comboStrategies` field with the desired `fallbackStrategy`
 4. **File safety**: **NEVER use `write` to overwrite the full SKILL.md.** Always use `edit` to change specific blocks. Inventory at the bottom is a STATUS reference, not a replacement for rules.
 5. **Backup before edit/write**: Always run the **pre-edit hook** **before** any `write` or `edit` to `SKILL.md`:
    ```bash
-   bash hooks/pre-edit.sh
+   bash scripts/hooks/pre-edit.sh
    ```
-   This creates a timestamped backup in `configure-9router/backup/` and auto-deletes backups older than 14 days.
+   This creates a timestamped backup in `configure-9router/scripts/backup/` and auto-deletes backups older than 14 days.
 6. **Verify before trust**: When poking combos/models, always query SQLite directly (see §0). Never guess combo/model content from memory — confirm with `sqlite3`.

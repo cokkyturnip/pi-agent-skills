@@ -3,7 +3,7 @@
 # This script creates a timestamped backup of SKILL.md before any edit operation.
 # It also cleans up backups older than 14 days.
 
-SKILL_DIR="$(dirname "${BASH_SOURCE[0]}")/.."  # skill root directory
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"  # skill root (from scripts/hooks/)
 BACKUP_DIR="$SKILL_DIR/backup"
 SKILL_FILE="$SKILL_DIR/SKILL.md"
 
