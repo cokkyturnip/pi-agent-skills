@@ -79,13 +79,13 @@ def backup_9router(out_path: Path):
 
 def main():
     parser = argparse.ArgumentParser(description="Configure 9router - Backup")
-    parser.add_argument("--backup-dir", "-b", type=str, default=None, help="Output JSON file path")
+    parser.add_argument("--output", "-b", type=str, default=None, help="Output JSON file path (default: ~/Downloads/9router-backup-<timestamp>.json)")
     args = parser.parse_args()
 
-    if args.backup_dir:
+    if args.output:
         out = Path(args.backup_dir)
     else:
-        out = Path('.') / f"9router-backup-{get_timestamp()}.json"
+        out = get_home() / "Downloads" / f"9router-backup-{get_timestamp()}.json"
 
     if backup_9router(out):
         print("✅ 9router backup complete!")

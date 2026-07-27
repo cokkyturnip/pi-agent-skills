@@ -27,8 +27,10 @@ PI_FILES = [
     "stitch-api-key",
 ]
 
+
+
 PI_DIRS = ["skills", "extensions"]
-EXCLUDE_DIRS = {"sessions"}
+EXCLUDE_DIRS = {"sessions", "backup"}
 EXCLUDE_FILES = {"models-store.json", "settings.json.bak"}
 
 def backup_pi(target: Path) -> bool:
@@ -44,7 +46,6 @@ def backup_pi(target: Path) -> bool:
         if fp.exists():
             shutil.copy2(fp, target / f)
             print(f"  ✓ {f}")
-
     for d in PI_DIRS:
         dp = src / d
         if dp.exists():

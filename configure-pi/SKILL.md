@@ -15,10 +15,10 @@ Works on **Windows, macOS, and Linux**.
 
 ```bash
 # Creates ~/Downloads/pi-backup-<timestamp>/
-python3 ~/.claude/skills/configure-pi/scripts/backup.py
+python3 ~/.pi/agent/skills/configure-pi/scripts/backup.py
 
 # Or specify output directory:
-python3 ~/.claude/skills/configure-pi/scripts/backup.py -b /path/to/backup-dir
+python3 ~/.pi/agent/skills/configure-pi/scripts/backup.py -b /path/to/backup-dir
 ```
 
 ---
@@ -31,10 +31,10 @@ python3 ~/.claude/skills/configure-pi/scripts/backup.py -b /path/to/backup-dir
 # 3. Copy backup folder to new machine
 
 # 4. Restore:
-python3 ~/.claude/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp>
+python3 ~/.pi/agent/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp>
 
 # Dry-run:
-python3 ~/.claude/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp> --dry-run
+python3 ~/.pi/agent/skills/configure-pi/scripts/restore.py -b /path/to/pi-backup-<timestamp> --dry-run
 ```
 
 Restore auto-runs `npm install` for packages declared in `settings.json`.
@@ -67,13 +67,15 @@ pi-backup-2026-07-20T05-30-00Z/
 └── extensions/
 ```
 
+> Folder `backup/` di dalam skill `configure-9router` otomatis di-exclude.
+
 ---
 
 ## What Gets Backed Up
 
 **Included:** `auth.json`, `settings.json`, `9router-config.json`, `AGENTS.md`, `notion.json`, `notion-mcp-auth.json`, `web-search.json`, `stitch-api-key`, `skills/`, `extensions/`, `hooks/engine/`.
 
-**Excluded:** `sessions/` (chat history), `models-store.json` (cache).
+**Excluded:** `sessions/` (chat history), `backup/` (folder di skill configure-9router), `models-store.json` (cache).
 
 ---
 
