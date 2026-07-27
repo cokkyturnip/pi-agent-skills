@@ -177,7 +177,7 @@ This collection adapts and builds upon several open-source projects. Each skill'
 | [code-review-skill](https://github.com/awesome-skills/code-review-skill) | [awesome-skills](https://github.com/awesome-skills) | MIT |
 | [stop-slop](https://github.com/hardikpandya/stop-slop) | [hardikpandya](https://github.com/hardikpandya) | MIT |
 | [state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) | [janwilmake](https://github.com/janwilmake) | MIT |
-| [9router](https://9router.com) | 9router | Proprietary |
+| [9router](https://9router.com) | 9router | [MIT](https://github.com/decolua/9router/blob/main/LICENSE) |
 
 ### Tools
 
