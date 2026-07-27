@@ -1,0 +1,15 @@
+{
+  "nextlevelbuilder/ui-ux-pro-max-skill": {
+    "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git",
+    "repoPath": ".claude/skills",
+    "skills": {
+      "design": ["SKILL.md", "references/", "scripts/"],
+      "ui-ux-pro-max": ["SKILL.md", "references/", "scripts/"],
+      "brand": ["SKILL.md", "scripts/"],
+      "design-system": ["SKILL.md", "scripts/"],
+      "ui-styling": ["SKILL.md", "scripts/"],
+      "code-review": ["SKILL.md", "scripts/"],
+      "banner-design": ["SKILL.md", "references/"]
+    }
+  }
+}

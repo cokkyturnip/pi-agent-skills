@@ -20,8 +20,8 @@ $Skills = @(
   "code-review",        "configure-9router",  "configure-pi"
   "design",             "design-system",     "notion"
   "project-schedule",   "security-review",   "slides"
-  "state-of-llm-apis",  "stop-slop",         "ui-styling"
-  "ui-ux-pro-max",      "youtube-summarizer"
+  "state-of-llm-apis",  "stop-slop",         "sync-upstream"
+  "ui-styling",         "ui-ux-pro-max",     "youtube-summarizer"
 )
 
 # State: all 1 (selected) by default
