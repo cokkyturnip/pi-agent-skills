@@ -85,18 +85,18 @@ sync_skill() {
     return 1
   fi
 
-  # ── Sync scripts/ to ~/.claude/skills/ (runtime)
+  # ── Sync scripts/ to ${CLAUDE_SKILL_DIR}/ (runtime)
   if [[ -d "${src}/scripts" ]]; then
     if [[ ! -d "${claude_dst}/scripts" ]]; then
       mkdir -p "${claude_dst}"
       cp -r "${src}/scripts" "${claude_dst}/"
-      echo "  $(green "✔") scripts/ → ~/.claude/skills/${skill}/ (new)"
+      echo "  $(green "✔") scripts/ → ${CLAUDE_SKILL_DIR}/${skill}/ (new)"
     else
       local changes
       changes=$(diff -rq "${src}/scripts" "${claude_dst}/scripts" 2>/dev/null || true)
       if [[ -n "$changes" ]]; then
         rsync -a --delete "${src}/scripts/" "${claude_dst}/scripts/"
-        echo "  $(green "✔") scripts/ → ~/.claude/skills/${skill}/ (updated)"
+        echo "  $(green "✔") scripts/ → ${CLAUDE_SKILL_DIR}/${skill}/ (updated)"
         echo "  $(dim "${changes}")"
       else
         echo "  $(dim "·") scripts/ — no changes"
@@ -104,7 +104,7 @@ sync_skill() {
     fi
   fi
 
-  # ── Sync docs/data to ~/.pi/agent/skills/ (documentation)
+  # ── Sync docs/data to ${PI_SKILL_DIR}/ (documentation)
   local pi_changes=false
 
   # When dest_override is not ".", copy the entire source tree to target dest dir
@@ -113,11 +113,11 @@ sync_skill() {
     mkdir -p "$(dirname "$target_dir")"
     if [[ ! -d "$target_dir" ]]; then
       cp -r "$src" "$target_dir"
-      echo "  $(green "✔") ${src}/* → ~/.pi/agent/skills/${skill}/${dest_override}/ (new)"
+      echo "  $(green "✔") ${src}/* → ${PI_SKILL_DIR}/${skill}/${dest_override}/ (new)"
       pi_changes=true
     else
       rsync -a --delete "${src}/" "${target_dir}/"
-      echo "  $(green "✔") ${src}/* → ~/.pi/agent/skills/${skill}/${dest_override}/ (updated)"
+      echo "  $(green "✔") ${src}/* → ${PI_SKILL_DIR}/${skill}/${dest_override}/ (updated)"
       pi_changes=true
     fi
   else
@@ -127,13 +127,13 @@ sync_skill() {
         if [[ ! -e "${pi_dst}/${item}" ]]; then
           mkdir -p "$(dirname "${pi_dst}/${item}")"
           cp -r "${src}/${item}" "${pi_dst}/${item}"
-          echo "  $(green "✔") ${item} → ~/.pi/agent/skills/${skill}/ (new)"
+          echo "  $(green "✔") ${item} → ${PI_SKILL_DIR}/${skill}/ (new)"
           pi_changes=true
         else
           if [[ -f "${src}/${item}" && -f "${pi_dst}/${item}" ]]; then
             if ! diff -q "${src}/${item}" "${pi_dst}/${item}" >/dev/null 2>&1; then
               cp "${src}/${item}" "${pi_dst}/${item}"
-              echo "  $(yellow "!") ${item} → ~/.pi/agent/skills/${skill}/ (updated)"
+              echo "  $(yellow "!") ${item} → ${PI_SKILL_DIR}/${skill}/ (updated)"
               pi_changes=true
             fi
           fi
