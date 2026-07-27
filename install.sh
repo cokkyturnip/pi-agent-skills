@@ -60,6 +60,11 @@ do_install() {
   local src=$1 count=0
   mkdir -p "$SKILL_DIR"
   for i in "${!SKILLS[@]}"; do
+    s="${SKILLS[$i]}"
+    # Skip mandatory — already installed
+    is_mandatory=false
+    for m in "${MANDATORY[@]}"; do [[ "$s" == "$m" ]] && is_mandatory=true && break; done
+    $is_mandatory && continue
     [[ ${SELECTED[$i]} -eq 0 ]] && continue
     s="${SKILLS[$i]}"
     if [[ -d "$src/$s" ]]; then

@@ -15,6 +15,8 @@
 $RepoUrl  = "https://github.com/cokkyturnip/pi-agent-skills"
 $SkillDir = "$env:USERPROFILE\.pi\agent\skills"
 
+$Mandatory = @("sync-upstream")
+
 $Skills = @(
   "banner-design",      "brand",             "cleanup-sessions"
   "code-review",        "configure-9router",  "configure-pi"
@@ -53,8 +55,13 @@ function Show-Menu {
   Write-Host ""
 
   for ($i = 0; $i -lt $total; $i++) {
-    $check = if ($Selected[$i] -eq 1) { $(Write-Colored '✔' green) } else { $(Write-Colored '·' dim) }
-    Write-Host "  [$("{0:D2}" -f $i)] $check  $($Skills[$i])"
+    $s = $Skills[$i]
+    if ($Mandatory -contains $s) {
+      Write-Host "  [$("{0:D2}" -f $i)] $(Write-Colored '■' green)  $s $(Write-Colored '(mandatory)' dim)"
+    } else {
+      $check = if ($Selected[$i] -eq 1) { $(Write-Colored '✔' green) } else { $(Write-Colored '·' dim) }
+      Write-Host "  [$("{0:D2}" -f $i)] $check  $($Skills[$i])"
+    }
   }
 
   Write-Host ""
@@ -65,13 +72,56 @@ function Show-Menu {
 function Install-Skills($Src) {
   $count = 0
   New-Item -ItemType Directory -Path $SkillDir -Force | Out-Null
+  New-Item -ItemType Directory -Path $ClaudeSkillDir -Force | Out-Null
+
+  # Install mandatory skills first
+  foreach ($s in $Mandatory) {
+    $srcPath = Join-Path $Src $s
+    if (Test-Path $srcPath) {
+      # Copy skill (exclude scripts)
+      $items = Get-ChildItem -Path $srcPath -Exclude "scripts"
+      foreach ($item in $items) {
+        if ($item.PSIsContainer) {
+          Copy-Item -Path $item.FullName -Destination "$SkillDir\$s\" -Recurse -Force
+        } else {
+          Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
+        }
+      }
+      # Copy scripts to Claude
+      $scriptsSrc = Join-Path $srcPath "scripts"
+      $scriptsDst = "$ClaudeSkillDir\$s\scripts"
+      if (Test-Path $scriptsSrc -and -not (Test-Path $scriptsDst)) {
+        New-Item -ItemType Directory -Path "$ClaudeSkillDir\$s" -Force | Out-Null
+        Copy-Item -Path $scriptsSrc -Destination "$ClaudeSkillDir\$s\" -Recurse -Force
+      }
+      Write-Host "  $(Write-Colored '■' green) $s $(Write-Colored '(mandatory)' dim)"
+      $count++
+    }
+  }
 
   for ($i = 0; $i -lt $Skills.Count; $i++) {
     if ($Selected[$i] -eq 0) { continue }
     $s = $Skills[$i]
+    if ($Mandatory -contains $s) { continue } # already installed
     $srcPath = Join-Path $Src $s
     if (Test-Path $srcPath) {
-      Copy-Item -Path $srcPath -Destination $SkillDir -Recurse -Force
+      # Copy skill (exclude scripts)
+      $items = Get-ChildItem -Path $srcPath -Exclude "scripts"
+      foreach ($item in $items) {
+        if ($item.PSIsContainer) {
+          Copy-Item -Path $item.FullName -Destination "$SkillDir\$s\" -Recurse -Force
+        } else {
+          Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
+        }
+      }
+      # Copy scripts to Claude (skip if exists)
+      $scriptsSrc = Join-Path $srcPath "scripts"
+      $scriptsDst = "$ClaudeSkillDir\$s\scripts"
+      if (Test-Path $scriptsSrc -and -not (Test-Path $scriptsDst)) {
+        New-Item -ItemType Directory -Path "$ClaudeSkillDir\$s" -Force | Out-Null
+        Copy-Item -Path $scriptsSrc -Destination "$ClaudeSkillDir\$s\" -Recurse -Force
+        Write-Host "  $(Write-Colored '✔' green) $s (scripts → ~/.claude/skills/$s/)"
+      }
       Write-Host "  $(Write-Colored '✔' green) $s"
       $count++
     } else {
@@ -86,7 +136,9 @@ function Install-Skills($Src) {
   }
 
   Write-Host ""
-  Write-Host "  $(Write-Colored "Done! $count skill(s) installed → $SkillDir" bold)"
+  Write-Host "  $(Write-Colored "Done! $count skill(s) installed" bold)"
+  Write-Host "  SKILL.md  → $SkillDir"
+  Write-Host "  Scripts   → $ClaudeSkillDir"
   Write-Host "  Pi will auto-detect them on next startup."
 }
 

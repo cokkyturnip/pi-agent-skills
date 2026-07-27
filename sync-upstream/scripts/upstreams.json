@@ -8,8 +8,30 @@
       "brand": ["SKILL.md", "scripts/"],
       "design-system": ["SKILL.md", "scripts/"],
       "ui-styling": ["SKILL.md", "scripts/"],
-      "code-review": ["SKILL.md", "scripts/"],
-      "banner-design": ["SKILL.md", "references/"]
+      "banner-design": ["SKILL.md", "references/"],
+      "slides": ["SKILL.md"]
+    }
+  },
+  "awesome-skills/code-review-skill": {
+    "url": "https://github.com/awesome-skills/code-review-skill.git",
+    "repoPath": "",
+    "skills": {
+      "code-review": ["SKILL.md", "scripts/"]
+    }
+  },
+  "hardikpandya/stop-slop": {
+    "url": "https://github.com/hardikpandya/stop-slop.git",
+    "repoPath": "",
+    "skills": {
+      "stop-slop": ["SKILL.md"]
+    }
+  },
+  "janwilmake/state-of-llm-apis": {
+    "url": "https://github.com/janwilmake/state-of-llm-apis.git",
+    "type": "submodule",
+    "repoPath": "",
+    "skills": {
+      "state-of-llm-apis": ["data/"]
     }
   }
 }

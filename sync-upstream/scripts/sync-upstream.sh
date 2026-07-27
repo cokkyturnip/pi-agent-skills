@@ -39,6 +39,12 @@ parse_config() {
     grep -A10 "\"${name}\":" "$CONFIG" | grep '"url"' | head -1 | sed 's/.*"url": "\(.*\)".*/\1/'
     return
   fi
+  # Get type for upstream
+  if [[ "$1" == "get-type" ]]; then
+    local name="$2"
+    grep -A10 "\"${name}\":" "$CONFIG" | grep '"type"' | head -1 | sed 's/.*"type": "\(.*\)".*/\1/'
+    return
+  fi
   # Get repo path for upstream
   if [[ "$1" == "get-repo-path" ]]; then
     local name="$2"
@@ -151,6 +157,7 @@ fi
 
 URL=$(parse_config "get-url" "$UPSTREAM")
 REPO_PATH=$(parse_config "get-repo-path" "$UPSTREAM")
+TYPE=$(parse_config "get-type" "$UPSTREAM" || echo "git")
 
 echo "$(bold "Sync Upstream: ${UPSTREAM}")"
 echo "  $(dim "Repo: ${URL}")"
@@ -158,18 +165,33 @@ echo ""
 
 # Clone/fetch upstream
 echo "  $(dim "Fetching upstream...")"
-rm -rf "$WORK_TREE"
-git clone --depth 1 "$URL" "$WORK_TREE" 2>&1 | sed 's/^/    /'
-echo "  $(green "✔") Cloned ${URL}"
+if [[ "$TYPE" == "submodule" ]]; then
+  echo "  $(dim "Updating submodule from: ${URL}")"
+  git submodule update --init --remote 2>&1 || \
+    git submodule sync && git submodule update --init --remote 2>&1
+  echo "  $(green "✔") Submodule updated."
+else
+  rm -rf "$WORK_TREE"
+  git clone --depth 1 "$URL" "$WORK_TREE" 2>&1 | sed 's/^/    /'
+  echo "  $(green "✔") Cloned ${URL}"
+fi
 echo ""
 
 if [[ -n "$SKILL" ]]; then
   # Sync single skill
-  sync_skill "$UPSTREAM" "$SKILL" "$WORK_TREE" "$REPO_PATH"
+  if [[ "$TYPE" == "submodule" ]]; then
+    echo "  $(dim "·") ${SKILL} (submodule — already updated above)"
+  else
+    sync_skill "$UPSTREAM" "$SKILL" "$WORK_TREE" "$REPO_PATH"
+  fi
 else
   # Sync all skills from this upstream
   for s in $(parse_config "list-skills" "$UPSTREAM"); do
-    sync_skill "$UPSTREAM" "$s" "$WORK_TREE" "$REPO_PATH"
+    if [[ "$TYPE" == "submodule" ]]; then
+      echo "  $(dim "·") ${s} (submodule — already updated above)"
+    else
+      sync_skill "$UPSTREAM" "$s" "$WORK_TREE" "$REPO_PATH"
+    fi
   done
 fi
 
