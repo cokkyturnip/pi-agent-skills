@@ -14,16 +14,23 @@ A curated collection of modular skills for [Pi](https://github.com/earendil-work
 
 Pick only the skills you want via checkbox menu:
 
+**Linux/macOS (bash):**
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.sh)
 ```
 
-Or clone first, then run:
+**Windows (PowerShell 5+ / 7+):**
+```powershell
+iex (iwr -Uri https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.ps1).Content
+```
 
+Or clone first, then run the script locally:
 ```bash
+# After cloning, run the installer from the repo root
 git clone https://github.com/cokkyturnip/pi-agent-skills ~/pi-skills
 cd ~/pi-skills
-./install.sh
+./install.sh        # Linux/macOS
+./install.ps1       # Windows PowerShell
 ```
 
 ### Option B — Clone All
@@ -43,6 +50,13 @@ cp -r /tmp/pi-skills/stop-slop ~/.pi/agent/skills/
 # ... pick any subset
 rm -rf /tmp/pi-skills
 ```
+
+### Windows Notes
+
+Pi on Windows requires a bash shell (Git Bash, WSL, or MSYS2). The install path
+`~/.pi/agent/skills/` maps to `%USERPROFILE%\.pi\agent\skills\` — same `~`
+resolution as Git Bash. The PowerShell `install.ps1` script handles path resolution
+automatically. You can also run the bash `install.sh` from Git Bash directly.
 
 ### Per-Skill Dependencies
 
