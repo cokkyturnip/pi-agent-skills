@@ -8,7 +8,11 @@
 set -euo pipefail
 
 SKILL_DIR="${HOME}/.pi/agent/skills"
+CLAUDE_SKILL_DIR="${HOME}/.claude/skills"
 REPO_URL="https://github.com/cokkyturnip/pi-agent-skills"
+
+# sync-upstream wajib — selalu terinstall, tidak bisa di-uncheck
+MANDATORY=("sync-upstream")
 
 SKILLS=(
   "banner-design"     "brand"             "cleanup-sessions"
@@ -45,10 +49,13 @@ show_menu() {
   echo "$(dim '  i → install     q → quit')"
   echo ""
   for i in "${!SKILLS[@]}"; do
-    if [[ ${SELECTED[$i]} -eq 1 ]]; then
-      printf "  [%2d] %s %s  %s\n" "$i" "$(green '✔')" " " "${SKILLS[$i]}"
+    s="${SKILLS[$i]}"
+    if [[ " ${MANDATORY[*]} " == *" ${s} "* ]]; then
+      printf "  [%2d] %s %s  %s $(dim '(mandatory)')\n" "$i" "$(green '■')" " " "$s"
+    elif [[ ${SELECTED[$i]} -eq 1 ]]; then
+      printf "  [%2d] %s %s  %s\n" "$i" "$(green '✔')" " " "$s"
     else
-      printf "  [%2d] %s %s  %s\n" "$i" "$(dim '·')" " " "${SKILLS[$i]}"
+      printf "  [%2d] %s %s  %s\n" "$i" "$(dim '·')" " " "$s"
     fi
   done
   echo ""
@@ -58,17 +65,50 @@ show_menu() {
 
 do_install() {
   local src=$1 count=0
-  mkdir -p "$SKILL_DIR"
+  mkdir -p "$SKILL_DIR" "$CLAUDE_SKILL_DIR"
+
+  # Install mandatory skills first
+  for s in "${MANDATORY[@]}"; do
+    if [[ -d "$src/$s" ]]; then
+      mkdir -p "$SKILL_DIR/$s"
+      shopt -s dotglob
+      for entry in "$src/$s"/*; do
+        bn=$(basename "$entry")
+        if [[ "$bn" != "scripts" ]]; then
+          cp -r "$entry" "$SKILL_DIR/$s/"
+        fi
+      done
+      shopt -u dotglob
+      if [[ -d "$src/$s/scripts" ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
+        mkdir -p "$CLAUDE_SKILL_DIR/$s"
+        cp -r "$src/$s/scripts" "$CLAUDE_SKILL_DIR/$s/"
+      fi
+      echo "  $(green '■') $s $(dim '(mandatory)')"
+      count=$((count + 1))
+    fi
+  done
+
   for i in "${!SKILLS[@]}"; do
     s="${SKILLS[$i]}"
     # Skip mandatory — already installed
-    is_mandatory=false
-    for m in "${MANDATORY[@]}"; do [[ "$s" == "$m" ]] && is_mandatory=true && break; done
-    $is_mandatory && continue
+    if [[ " ${MANDATORY[*]} " == *" ${s} "* ]]; then
+      continue
+    fi
     [[ ${SELECTED[$i]} -eq 0 ]] && continue
-    s="${SKILLS[$i]}"
     if [[ -d "$src/$s" ]]; then
-      cp -r "$src/$s" "$SKILL_DIR/"
+      mkdir -p "$SKILL_DIR/$s"
+      shopt -s dotglob
+      for entry in "$src/$s"/*; do
+        bn=$(basename "$entry")
+        if [[ "$bn" != "scripts" ]]; then
+          cp -r "$entry" "$SKILL_DIR/$s/"
+        fi
+      done
+      shopt -u dotglob
+      if [[ -d "$src/$s/scripts" ]] && [[ ! -d "$CLAUDE_SKILL_DIR/$s/scripts" ]]; then
+        mkdir -p "$CLAUDE_SKILL_DIR/$s"
+        cp -r "$src/$s/scripts" "$CLAUDE_SKILL_DIR/$s/"
+      fi
       echo "  $(green '✔') $s"
       count=$((count + 1))
     else
@@ -79,8 +119,42 @@ do_install() {
     [[ -f "$src/$f" ]] && cp "$src/$f" "$SKILL_DIR/$f" 2>/dev/null || true
   done
   echo ""
-  echo "  $(bold 'Done!') $count skill(s) installed → $SKILL_DIR"
+  echo "  $(bold 'Done!') $count skill(s) installed"
+  echo "  SKILL.md  → $SKILL_DIR"
+  echo "  Scripts   → $CLAUDE_SKILL_DIR"
   echo "  Pi will auto-detect them on next startup."
+}
+
+# ── Setup env compatibility ──
+setup_env() {
+  local profile=""
+  if [[ -n "${ZSH_VERSION:-}" ]]; then
+    profile="${HOME}/.zshrc"
+  elif [[ -n "${BASH_VERSION:-}" ]]; then
+    if [[ -f "${HOME}/.bash_profile" ]]; then
+      profile="${HOME}/.bash_profile"
+    elif [[ -f "${HOME}/.bashrc" ]]; then
+      profile="${HOME}/.bashrc"
+    fi
+  fi
+
+  if [[ -z "${CLAUDE_PLUGIN_ROOT:-}" ]]; then
+    local line='export CLAUDE_PLUGIN_ROOT="$HOME"'
+    if [[ -n "$profile" ]] && grep -q "CLAUDE_PLUGIN_ROOT" "$profile" 2>/dev/null; then
+      echo "  $(dim '·') CLAUDE_PLUGIN_ROOT already in '"$(basename "$profile")"'"
+    elif [[ -n "$profile" ]]; then
+      echo "" >> "$profile"
+      echo "# Pi Agent Skills: CLAUDE_PLUGIN_ROOT for ui-ux-pro-max compatibility" >> "$profile"
+      echo "$line" >> "$profile"
+      echo "  $(green '✔') Added CLAUDE_PLUGIN_ROOT to '"$(basename "$profile")"'"
+    else
+      echo "  $(yellow '!') Cannot detect shell profile. Set manually:"
+      echo "      echo 'export CLAUDE_PLUGIN_ROOT=\"\$HOME\"' >> ~/.bashrc"
+    fi
+    export CLAUDE_PLUGIN_ROOT="$HOME"
+  else
+    echo "  $(green '✔') CLAUDE_PLUGIN_ROOT already set (value: ${CLAUDE_PLUGIN_ROOT})"
+  fi
 }
 
 # ==== Main ====
@@ -97,11 +171,9 @@ while true; do
     [aA]) for i in "${!SELECTED[@]}"; do SELECTED[$i]=1; done ;;
     [nN]) for i in "${!SELECTED[@]}"; do SELECTED[$i]=0; done ;;
     *)
-      # Try single number first
       if [[ "$input" =~ ^[0-9]+$ ]] && (( input >= 0 && input < ${#SKILLS[@]} )); then
         [[ ${SELECTED[$input]} -eq 1 ]] && SELECTED[$input]=0 || SELECTED[$input]=1
       else
-        # Space/comma separated list
         input="${input//,/ }"
         for n in $input; do
           [[ "$n" =~ ^[0-9]+$ ]] && (( n >= 0 && n < ${#SKILLS[@]} )) && \
@@ -129,5 +201,7 @@ else
   do_install "$TMP/repo"
 fi
 
+echo ""
+setup_env
 echo ""
 echo "  $(dim 'Tip: ls ~/.pi/agent/skills/  to verify.')"

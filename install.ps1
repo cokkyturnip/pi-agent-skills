@@ -14,6 +14,7 @@
 
 $RepoUrl  = "https://github.com/cokkyturnip/pi-agent-skills"
 $SkillDir = "$env:USERPROFILE\.pi\agent\skills"
+$ClaudeSkillDir = "$env:USERPROFILE\.claude\skills"
 
 $Mandatory = @("sync-upstream")
 
@@ -142,6 +143,16 @@ function Install-Skills($Src) {
   Write-Host "  Pi will auto-detect them on next startup."
 }
 
+function Setup-Env {
+  if (-not [Environment]::GetEnvironmentVariable("CLAUDE_PLUGIN_ROOT", "User")) {
+    [Environment]::SetEnvironmentVariable("CLAUDE_PLUGIN_ROOT", $env:USERPROFILE, "User")
+    $env:CLAUDE_PLUGIN_ROOT = $env:USERPROFILE
+    Write-Host "  $(Write-Colored '✔' green) CLAUDE_PLUGIN_ROOT set to `"$env:USERPROFILE`" (persistent)"
+  } else {
+    Write-Host "  $(Write-Colored '✔' green) CLAUDE_PLUGIN_ROOT already set (value: $([Environment]::GetEnvironmentVariable('CLAUDE_PLUGIN_ROOT', 'User')))"
+  }
+}
+
 # ====== Main ======
 $IsCloned = Test-Path (Join-Path $PSScriptRoot ".git")
 
@@ -191,5 +202,7 @@ if ($IsCloned) {
   }
 }
 
+Write-Host ""
+Setup-Env
 Write-Host ""
 Write-Host "  $(Write-Colored 'Tip: ls ~/.pi/agent/skills/  to verify.' dim)"
