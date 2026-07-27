@@ -28,10 +28,12 @@
   },
   "janwilmake/state-of-llm-apis": {
     "url": "https://github.com/janwilmake/state-of-llm-apis.git",
-    "type": "submodule",
     "repoPath": "",
     "skills": {
-      "state-of-llm-apis": ["data/"]
+      "state-of-llm-apis": {
+        "items": ["."],
+        "dest": "data"
+      }
     }
   }
 }

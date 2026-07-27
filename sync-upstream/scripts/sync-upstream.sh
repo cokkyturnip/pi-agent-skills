@@ -28,35 +28,31 @@ trap cleanup EXIT
 
 # ── Parse JSON with bash (no jq dependency)
 parse_config() {
-  # Extract upstream names
   if [[ "$1" == "list-upstreams" ]]; then
     grep -oP '"[A-Za-z0-9_/-]+":\s*\{' "$CONFIG" | sed 's/": {$//' | sed 's/"//g'
     return
   fi
-  # Get URL for upstream
   if [[ "$1" == "get-url" ]]; then
     local name="$2"
     grep -A10 "\"${name}\":" "$CONFIG" | grep '"url"' | head -1 | sed 's/.*"url": "\(.*\)".*/\1/'
     return
   fi
-  # Get type for upstream
-  if [[ "$1" == "get-type" ]]; then
-    local name="$2"
-    grep -A10 "\"${name}\":" "$CONFIG" | grep '"type"' | head -1 | sed 's/.*"type": "\(.*\)".*/\1/'
-    return
-  fi
-  # Get repo path for upstream
   if [[ "$1" == "get-repo-path" ]]; then
     local name="$2"
     grep -A10 "\"${name}\":" "$CONFIG" | grep '"repoPath"' | head -1 | sed 's/.*"repoPath": "\(.*\)".*/\1/'
     return
   fi
-  # List skills for upstream
   if [[ "$1" == "list-skills" ]]; then
     local name="$2"
-    # Extract lines between "skills": { and the next }
+    # Extract keys under "skills" — matches both array and object values
     sed -n "/\"${name}\":/,/^  \}/p" "$CONFIG" | sed -n '/"skills": {/,/    \}/p' | \
-      grep -oP '"[A-Za-z0-9_-]+":\s*\[' | sed 's/": \[$//' | sed 's/"//g'
+      grep -oP '"[A-Za-z0-9_-]+":\s*(\[|{)' | sed 's/": \[$//; s/": {$//' | sed 's/"//g'
+    return
+  fi
+  # Get per-skill dest override (default: ".")
+  if [[ "$1" == "get-skill-dest" ]]; then
+    local upstream="$2" skill="$3"
+    grep -A10 "\"${skill}\":" "$CONFIG" | grep '"dest"' | head -1 | sed 's/.*"dest": "\(.*\)".*/\1/'
     return
   fi
 }
@@ -64,9 +60,22 @@ parse_config() {
 # ── Sync a single skill from upstream clone
 sync_skill() {
   local upstream="$1" skill="$2" repo_dir="$3" repo_path="$4"
-  local src="${repo_dir}/${repo_path}/${skill}"
+
+  # Determine source dir
+  # Priority: repo_path/skill → skill → repo root
+  local src
+  if [[ -n "$repo_path" && -d "${repo_dir}/${repo_path}/${skill}" ]]; then
+    src="${repo_dir}/${repo_path}/${skill}"
+  elif [[ -d "${repo_dir}/${skill}" ]]; then
+    src="${repo_dir}/${skill}"
+  else
+    src="${repo_dir}"  # fallback: repo root
+  fi
+
   local pi_dst="${PI_SKILL_DIR}/${skill}"
   local claude_dst="${CLAUDE_SKILL_DIR}/${skill}"
+  local dest_override
+  dest_override=$(parse_config "get-skill-dest" "$upstream" "$skill" || echo ".")
 
   echo ""
   echo "  $(bold "→ Sync: ${skill} (${upstream})")"
@@ -83,7 +92,6 @@ sync_skill() {
       cp -r "${src}/scripts" "${claude_dst}/"
       echo "  $(green "✔") scripts/ → ~/.claude/skills/${skill}/ (new)"
     else
-      # Check for changes
       local changes
       changes=$(diff -rq "${src}/scripts" "${claude_dst}/scripts" 2>/dev/null || true)
       if [[ -n "$changes" ]]; then
@@ -96,26 +104,43 @@ sync_skill() {
     fi
   fi
 
-  # ── Sync SKILL.md and references/ to ~/.pi/agent/skills/ (documentation)
+  # ── Sync docs/data to ~/.pi/agent/skills/ (documentation)
   local pi_changes=false
-  for item in "SKILL.md" "references" "data"; do
-    if [[ -e "${src}/${item}" ]]; then
-      if [[ ! -e "${pi_dst}/${item}" ]]; then
-        mkdir -p "$(dirname "${pi_dst}/${item}")"
-        cp -r "${src}/${item}" "${pi_dst}/${item}"
-        echo "  $(green "✔") ${item} → ~/.pi/agent/skills/${skill}/ (new)"
-        pi_changes=true
-      else
-        if [[ -f "${src}/${item}" && -f "${pi_dst}/${item}" ]]; then
-          if ! diff -q "${src}/${item}" "${pi_dst}/${item}" >/dev/null 2>&1; then
-            cp "${src}/${item}" "${pi_dst}/${item}"
-            echo "  $(yellow "!") ${item} → ~/.pi/agent/skills/${skill}/ (updated)"
-            pi_changes=true
+
+  # When dest_override is not ".", copy the entire source tree to target dest dir
+  if [[ "$dest_override" != "." ]]; then
+    local target_dir="${pi_dst}/${dest_override}"
+    mkdir -p "$(dirname "$target_dir")"
+    if [[ ! -d "$target_dir" ]]; then
+      cp -r "$src" "$target_dir"
+      echo "  $(green "✔") ${src}/* → ~/.pi/agent/skills/${skill}/${dest_override}/ (new)"
+      pi_changes=true
+    else
+      rsync -a --delete "${src}/" "${target_dir}/"
+      echo "  $(green "✔") ${src}/* → ~/.pi/agent/skills/${skill}/${dest_override}/ (updated)"
+      pi_changes=true
+    fi
+  else
+    # Default: sync SKILL.md, references/, data/ individually
+    for item in "SKILL.md" "references" "data"; do
+      if [[ -e "${src}/${item}" ]]; then
+        if [[ ! -e "${pi_dst}/${item}" ]]; then
+          mkdir -p "$(dirname "${pi_dst}/${item}")"
+          cp -r "${src}/${item}" "${pi_dst}/${item}"
+          echo "  $(green "✔") ${item} → ~/.pi/agent/skills/${skill}/ (new)"
+          pi_changes=true
+        else
+          if [[ -f "${src}/${item}" && -f "${pi_dst}/${item}" ]]; then
+            if ! diff -q "${src}/${item}" "${pi_dst}/${item}" >/dev/null 2>&1; then
+              cp "${src}/${item}" "${pi_dst}/${item}"
+              echo "  $(yellow "!") ${item} → ~/.pi/agent/skills/${skill}/ (updated)"
+              pi_changes=true
+            fi
           fi
         fi
       fi
-    fi
-  done
+    done
+  fi
 
   if [[ "$pi_changes" == false ]] && [[ ! -d "${src}/scripts" || -z "$(diff -rq "${src}/scripts" "${claude_dst}/scripts" 2>/dev/null || echo "changed")" ]]; then
     echo "  $(dim "·") up to date"
@@ -157,41 +182,23 @@ fi
 
 URL=$(parse_config "get-url" "$UPSTREAM")
 REPO_PATH=$(parse_config "get-repo-path" "$UPSTREAM")
-TYPE=$(parse_config "get-type" "$UPSTREAM" || echo "git")
 
 echo "$(bold "Sync Upstream: ${UPSTREAM}")"
 echo "  $(dim "Repo: ${URL}")"
 echo ""
 
-# Clone/fetch upstream
+# Clone upstream
 echo "  $(dim "Fetching upstream...")"
-if [[ "$TYPE" == "submodule" ]]; then
-  echo "  $(dim "Updating submodule from: ${URL}")"
-  git submodule update --init --remote 2>&1 || \
-    git submodule sync && git submodule update --init --remote 2>&1
-  echo "  $(green "✔") Submodule updated."
-else
-  rm -rf "$WORK_TREE"
-  git clone --depth 1 "$URL" "$WORK_TREE" 2>&1 | sed 's/^/    /'
-  echo "  $(green "✔") Cloned ${URL}"
-fi
+rm -rf "$WORK_TREE"
+git clone --depth 1 "$URL" "$WORK_TREE" 2>&1 | sed 's/^/    /'
+echo "  $(green "✔") Cloned ${URL}"
 echo ""
 
 if [[ -n "$SKILL" ]]; then
-  # Sync single skill
-  if [[ "$TYPE" == "submodule" ]]; then
-    echo "  $(dim "·") ${SKILL} (submodule — already updated above)"
-  else
-    sync_skill "$UPSTREAM" "$SKILL" "$WORK_TREE" "$REPO_PATH"
-  fi
+  sync_skill "$UPSTREAM" "$SKILL" "$WORK_TREE" "$REPO_PATH"
 else
-  # Sync all skills from this upstream
   for s in $(parse_config "list-skills" "$UPSTREAM"); do
-    if [[ "$TYPE" == "submodule" ]]; then
-      echo "  $(dim "·") ${s} (submodule — already updated above)"
-    else
-      sync_skill "$UPSTREAM" "$s" "$WORK_TREE" "$REPO_PATH"
-    fi
+    sync_skill "$UPSTREAM" "$s" "$WORK_TREE" "$REPO_PATH"
   done
 fi
 
