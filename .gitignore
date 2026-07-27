@@ -1,0 +1,12 @@
+# Local config & backups
+configure-9router/backup/
+
+# Git repos cloned inside skills (state-of-llm-apis data)
+**/.git/
+
+# Python artifacts
+**/__pycache__/
+**/*.pyc
+
+# macOS
+.DS_Store

@@ -1,0 +1,186 @@
+# 🧠 Pi Agent Skills
+
+A curated collection of modular skills for [Pi](https://github.com/earendil-works/pi) — an AI coding agent harness. Skills auto-activate when relevant tasks are detected.
+
+> **Status:** Active development. Tested with Pi on Node.js.
+>
+> **Philosophy:** Modular, on-demand, progressive disclosure. No skill loads unless needed.
+
+---
+
+## 📦 Installation
+
+Lae bisa langsung clone repo ini ke folder `skills` Pi:
+
+```bash
+git clone https://github.com/cokkyturnip/pi-agent-skills ~/.pi/agent/skills
+```
+
+Setelah itu, Pi akan otomatis mendeteksi semua skill di dalamnya.
+
+### Per-Skill Dependencies
+
+Some skills have optional runtime dependencies:
+
+| Skill | Dependency | Required? |
+|-------|-----------|-----------|
+| `slides` | Chart.js (CDN-loaded in HTML output) | No |
+| `design` | Gemini API key via `GEMINI_API_KEY` env | For image generation only |
+| `state-of-llm-apis` | Git pull (auto: daily data sync) | Auto-handled |
+| `youtube-summarizer` | Python + youtube-transcript-api | For local transcript fallback |
+| `project-schedule` | Python (XML generation) | No (inline XML works) |
+
+### Verification
+
+Skills are auto-detected by Pi on startup:
+
+```bash
+ls ~/.pi/agent/skills/
+# → banner-design  brand  code-review  design  ... etc
+```
+
+---
+
+## 🗂️ Skill Directory
+
+### 🎨 Design & Branding
+
+| Skill | Description | Source |
+|-------|-------------|--------|
+| **[ui-ux-pro-max](ui-ux-pro-max/)** | UI/UX design intelligence database — 84 styles, 192 palettes, 74 font pairings, 22 tech stacks, 98 UX guidelines, 16 GSAP motion presets, 25 chart types. Progressive-loading CSV data. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[design](design/)** | Comprehensive design engine — 55 logo styles (Gemini AI), 50-deliverable corporate identity program (CIP), HTML presentations with Chart.js, 22 banner styles, 15 icon styles, social media photo generation. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[design-system](design-system/)** | Token architecture — primitive → semantic → component layers. CSS variable generation, spacing/typography scales, component specifications. Strategic slide creation for design system presentations. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[brand](brand/)** | Brand identity management — voice guidelines, visual identity, messaging frameworks, color palette management, typography specs, logo usage rules, asset organization, consistency checklists. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[banner-design](banner-design/)** | Banner design engine — 22 visual styles across 12 platforms (Facebook, Twitter/X, LinkedIn, YouTube, Instagram, Google Display, website hero, print). Art direction options with platform-specific sizing. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[slides](slides/)** | Strategic HTML presentation generator — Chart.js integration, design tokens, responsive layouts, copywriting formulas. Slide strategies for different audience contexts. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+| **[ui-styling](ui-styling/)** | Beautiful UIs with shadcn/ui (Radix UI + Tailwind), Tailwind CSS utility-first styling, canvas-based visual designs. Accessible components (dialogs, dropdowns, tables), dark mode, responsive layouts. | **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** |
+
+### ✅ Code Quality & Review
+
+| Skill | Description | Source |
+|-------|-------------|--------|
+| **[code-review](code-review/)** | Production-ready code review methodology — 4-phase process (Context → High-Level → Line-by-Line → Summary). Severity labeling (🔴 blocking / 🟡 important / 🟢 nit). 20+ language-specific guides (React, Vue, Angular, Svelte, Rust, TypeScript, Python, Go, Kotlin, Swift, PHP, C#, Flutter/Dart, and more). Cross-cutting guides for architecture, performance, security, N+1, XSS, SQL injection, error handling, async/concurrency. Progressive disclosure — language guides load on-demand. **Flutter/Dart reference added by this collection.** | **[awesome-skills/code-review-skill](https://github.com/awesome-skills/code-review-skill)** |
+| **[stop-slop](stop-slop/)** | AI writing pattern removal — eliminates predictable AI tells from prose. Pattern references for phrases, structures, and examples. Use for copywriting, summaries, proposals, editorial, and redaksi. | **[hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)** |
+| **[security-review](security-review/)** | Three-layer security review — Layer 1: pattern warnings (unsafe deserialization, XSS, hardcoded secrets, SQL injection, eval). Layer 2: LLM diff review. Layer 3: cross-file data flow tracing. HARD GATE for auth/user-input/database/file-upload/API code. | **Original** (Inspired by Anthropic's `security-guidance` plugin and `obra/superpowers` methodology) |
+
+### 🔧 Configuration & Utilities
+
+| Skill | Description | Source |
+|-------|-------------|--------|
+| **[configure-9router](configure-9router/)** | 9router model combo management via SQLite — register/whitelist models, manage routing combos, blacklist models, audit usage. Backup automation, pre-edit hooks, inventory tracking. | **Original** (Built on [9router](https://9router.com) CLI) |
+| **[configure-pi](configure-pi/)** | Pi agent configuration backup & restore — settings, skills, auth, extensions. Machine migration tool. Independent from 9router config. | **Original** |
+| **[cleanup-sessions](cleanup-sessions/)** | Session cleanup — retains 20 most recent sessions per project, max 14 days. Keeps Pi lean. | **Original** |
+
+### 📝 Notion & Project Management
+
+| Skill | Description | Source |
+|-------|-------------|--------|
+| **[notion](notion/)** | Append content to Notion pages — preview-first workflow. Safe append with user confirmation before changes. | **Original** |
+| **[project-schedule](project-schedule/)** | MS Project XML schedule generation — tasks, dependencies, milestones, holidays. ProjectLibre-compatible. | **Original** |
+
+### 🤖 LLM & Media
+
+| Skill | Description | Source |
+|-------|-------------|--------|
+| **[state-of-llm-apis](state-of-llm-apis/)** | Living knowledge base of LLM API specifications, pricing, model comparisons, changelog, and deprecation schedules. Auto-updated daily from official provider docs. Covers OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta. | **Data:** [janwilmake/state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) — **Skill wrapper:** Original |
+| **[youtube-summarizer](youtube-summarizer/)** | YouTube video summarizer — transcript extraction, multi-fallback strategy (primary: Pi fetch_content, fallback: local Python, final: 9router). Analysis with key themes, arguments, conclusions. | **Original** |
+
+---
+
+## 🧩 How Skills Work in Pi
+
+### Auto-Detection
+
+Pi scans `~/.pi/agent/skills/*/SKILL.md` on startup. Each skill has a `name` and `description` in YAML frontmatter that Pi uses for context routing.
+
+### Progressive Disclosure
+
+Skills **never load their full content** unless activated. When you ask Pi to review code, Pi reads:
+1. The skill's `SKILL.md` (~200-300 lines, the "how-to")
+2. On-demand: language-specific reference files (e.g., `reference/react.md`) only when reviewing React code
+
+This keeps token usage minimal even with 17+ skills installed.
+
+### Activation Criteria
+
+| Trigger | Skill |
+|---------|-------|
+| "Review this PR / code change" | `code-review` |
+| "Check security of this code" | `security-review` |
+| "Summarize a YouTube video" | `youtube-summarizer` |
+| "Design a logo / banner / brand" | `design`, `banner-design`, `brand` |
+| "Create a UI component / layout" | `ui-styling`, `ui-ux-pro-max` |
+| "Build a presentation deck" | `slides`, `design-system` |
+| "Fix AI-sounding prose" | `stop-slop` |
+| "Configure LLM models / routing" | `configure-9router` |
+| "Backup / migrate Pi config" | `configure-pi` |
+| "Generate a project timeline" | `project-schedule` |
+| "Append to Notion page" | `notion` |
+| "What's the latest LLM API data?" | `state-of-llm-apis` |
+| "Compare model pricing / capabilities" | `state-of-llm-apis` |
+
+---
+
+## 🙏 Credits & License
+
+This collection adapts and builds upon several open-source projects. Each skill's `SKILL.md` or source repository contains its original license. We are deeply grateful to:
+
+### Skills
+
+| Project | Author | License |
+|---------|--------|---------|
+| [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | [nextlevelbuilder](https://github.com/nextlevelbuilder) | MIT |
+| [code-review-skill](https://github.com/awesome-skills/code-review-skill) | [awesome-skills](https://github.com/awesome-skills) | MIT |
+| [stop-slop](https://github.com/hardikpandya/stop-slop) | [hardikpandya](https://github.com/hardikpandya) | MIT |
+| [state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) | [janwilmake](https://github.com/janwilmake) | MIT |
+| [9router](https://9router.com) | 9router | Proprietary |
+
+### Tools
+
+| Tool | Description |
+|------|-------------|
+| [Pi](https://github.com/earendil-works/pi) | AI coding agent harness by earendil-works |
+| [shadcn/ui](https://ui.shadcn.com/) | UI component library (referenced by `ui-styling`) |
+| [21st.dev](https://21st.dev/) | UI component marketplace (referenced by `ui-styling`, `ui-ux-pro-max`) |
+| [Chart.js](https://www.chartjs.org/) | Charting library (referenced by `slides`, `design`) |
+
+### Original Skills in This Collection
+
+The following skills were created from scratch for this collection:
+
+- `cleanup-sessions` — Session lifecycle management for Pi
+- `configure-9router` — 9router combo management workflow
+- `configure-pi` — Pi config migration tooling
+- `notion` — Safe Notion append workflow
+- `project-schedule` — MS Project XML generation
+- `security-review` — Three-layer security review (inspired by Anthropic's security-guidance)
+- `youtube-summarizer` — YouTube transcript analysis
+
+### Flutter/Dart Addition
+
+The `code-review/reference/flutter-dart.md` guide was added to this collection, adapted from two Flutter code review checklists (sourced from supergraph and everything-openai-codex ecosystems). It covers Dart 3, Flutter widgets, state management (BLoC, Riverpod, Provider, GetX, MobX, Signals), performance, accessibility, and security.
+
+---
+
+## 📄 License
+
+Unless otherwise noted per-skill:
+
+- Skills adapted from open-source projects retain their original license (see individual `SKILL.md` or original repository).
+- Original skills in this collection are shared under **MIT License**.
+
+See [LICENSE](LICENSE) for details.
+
+---
+
+## 🤝 Contributing
+
+PRs welcome! Please follow existing structure:
+1. Each skill in its own directory with `SKILL.md`
+2. Progressive disclosure — keep core `SKILL.md` lean, load references on-demand
+3. Credit sources — if adapting existing work, preserve attribution
+4. No real secrets or API keys in files — use environment variables
+
+---
+
+*Made with ❤️ for the Pi ecosystem.*
