@@ -1,0 +1,21 @@
+{
+  "$schema": "https://selfdrivingrepo.com/schema.json",
+  "branch": "main",
+  "agents": [
+    {
+      "name": "Model Tracker",
+      "llm_model": "z-ai/glm-5.2",
+      "frequency_hours": 168,
+      "prompt": "You maintain a living 'State of LLM APIs' knowledge base in markdown.\n\nOn each run:\n1. Web search for new model releases, pricing changes, deprecations, and API updates from all major LLM providers (OpenAI, Anthropic, Google, Mistral, Meta, Cohere, xAI, DeepSeek).\n2. Update the relevant markdown files:\n   - models/{provider}.md — model catalog with specs, context windows, pricing per 1M tokens\n   - comparison.md — side-by-side feature/pricing matrix\n   - changelog.md — prepend new entries for any changes found\n   - deprecated.md — track sunset dates and migration paths\n3. Interlink between files. Every model mention should link to its provider page.\n4. If no changes found, do nothing. Never make edits just to look busy.\n\nWrite for developers who need to pick a model for their app. Be precise with numbers. Always include the date you verified each data point.",
+      "budget_cents": 500,
+      "budget_period": "month",
+      "tools": {
+        "bash": true,
+        "diff": false,
+        "threads": true,
+        "webSearch": true,
+        "upstreamRepos": []
+      }
+    }
+  ]
+}
