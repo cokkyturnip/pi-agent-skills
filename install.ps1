@@ -90,7 +90,7 @@ function Install-Skills($Src) {
           Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
         }
       }
-      # Copy scripts to Claude (hanya untuk skill kita)
+      # Copy scripts to Claude (hanya untuk upstream skill)
       $scriptsSrc = Join-Path $srcPath "scripts"
       $scriptsDst = "$ClaudeSkillDir\$s\scripts"
       if (Test-Path $scriptsSrc -and ($OurScripts -contains $s) -and -not (Test-Path $scriptsDst)) {
@@ -117,7 +117,7 @@ function Install-Skills($Src) {
           Copy-Item -Path $item.FullName -Destination "$SkillDir\$s" -Force
         }
       }
-      # Copy scripts to Claude (hanya untuk skill kita)
+      # Copy scripts to Claude (hanya untuk upstream skill)
       $scriptsSrc = Join-Path $srcPath "scripts"
       $scriptsDst = "$ClaudeSkillDir\$s\scripts"
       if (Test-Path $scriptsSrc -and ($OurScripts -contains $s) -and -not (Test-Path $scriptsDst)) {

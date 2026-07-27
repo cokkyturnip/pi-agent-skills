@@ -14,64 +14,30 @@ The collection will keep evolving. Skills get added as needs arise, not because 
 
 ## 📦 Installation
 
-### Option A — Interactive Installer (Recommended)
+### Interactive Installer (Recommended)
 
 Pick only the skills you want via checkbox menu:
 
 **Linux/macOS (bash):**
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.sh)
-
-> **⚠️ Skill upstream scripts** — Untuk skill dari upstream (brand, design, dll),
-> script eksekusinya (`scripts/`) tidak termasuk di repo ini.
-> Jalankan `sync-upstream` setelah instalasi untuk melengkapi:
-> ```bash
-> # sync-upstream akan meng-clone dan meng-copy scripts dari repo upstream
-> # Cek SKILL nya: ~/.pi/agent/skills/sync-upstream/SKILL.md
-> ```
 ```
 
 **Windows (PowerShell 5+ / 7+):**
 ```powershell
 iex (iwr -Uri https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main/install.ps1).Content
-
-> **⚠️ Skill upstream scripts** — Sama seperti versi bash, jalankan `sync-upstream`
-> setelah instalasi untuk melengkapi script dari repo upstream.
 ```
 
-Or clone first, then run the script locally:
-```bash
-# After cloning, run the installer from the repo root
-git clone https://github.com/cokkyturnip/pi-agent-skills ~/pi-skills
-cd ~/pi-skills
-./install.sh        # Linux/macOS
-./install.ps1       # Windows PowerShell
-```
+> **⚠️ Upstream skill scripts** — Scripts for upstream skills (brand, design, etc.)
+> are copied to `~/.claude/skills/` during installation.
+> Run `sync-upstream` after installation to keep them up to date.
 
-### Option B — Clone All
+### Verification
 
 ```bash
-git clone https://github.com/cokkyturnip/pi-agent-skills ~/.pi/agent/skills
+ls ~/.pi/agent/skills/
+# → banner-design  brand  code-review  design  ... etc
 ```
-
-### Option C — Manual Copy
-
-Clone, then copy only what you need:
-
-```bash
-git clone https://github.com/cokkyturnip/pi-agent-skills /tmp/pi-skills
-cp -r /tmp/pi-skills/code-review ~/.pi/agent/skills/
-cp -r /tmp/pi-skills/stop-slop ~/.pi/agent/skills/
-# ... pick any subset
-rm -rf /tmp/pi-skills
-```
-
-### Windows Notes
-
-Pi on Windows requires a bash shell (Git Bash, WSL, or MSYS2). The install path
-`~/.pi/agent/skills/` maps to `%USERPROFILE%\.pi\agent\skills\` — same `~`
-resolution as Git Bash. The PowerShell `install.ps1` script handles path resolution
-automatically. You can also run the bash `install.sh` from Git Bash directly.
 
 ### Per-Skill Dependencies
 
