@@ -10,3 +10,8 @@ configure-9router/backup/
 
 # macOS
 .DS_Store
+
+# Skill state files (created at runtime, not committed)
+**/.last_update
+**/.last_session_cleanup
+**/.last_*
