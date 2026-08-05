@@ -42,7 +42,7 @@ iex (iwr -Uri https://raw.githubusercontent.com/cokkyturnip/pi-agent-skills/main
 
 ```bash
 ls ~/.pi/agent/skills/
-# → banner-design  brand  code-review  design  ... etc
+# → banner-design  brand  configure-9router  design  ... etc
 ```
 
 ### Per-Skill Dependencies
@@ -63,7 +63,7 @@ Skills are auto-detected by Pi on startup:
 
 ```bash
 ls ~/.pi/agent/skills/
-# → banner-design  brand  code-review  design  ... etc
+# → banner-design  brand  configure-9router  design  ... etc
 ```
 
 ---
@@ -86,9 +86,10 @@ ls ~/.pi/agent/skills/
 
 | Skill | Description | Source |
 |-------|-------------|--------|
-| **[code-review](code-review/)** | Production-ready code review methodology — 4-phase process (Context → High-Level → Line-by-Line → Summary). Severity labeling (🔴 blocking / 🟡 important / 🟢 nit). 20+ language-specific guides (React, Vue, Angular, Svelte, Rust, TypeScript, Python, Go, Kotlin, Swift, PHP, C#, Flutter/Dart, and more). Cross-cutting guides for architecture, performance, security, N+1, XSS, SQL injection, error handling, async/concurrency. Progressive disclosure — language guides load on-demand. **Flutter/Dart reference adapted from [datit309/supergraph](https://github.com/datit309/supergraph) and [mturac/everything-openai-codex](https://github.com/mturac/everything-openai-codex) checklists.** | **[awesome-skills/code-review-skill](https://github.com/awesome-skills/code-review-skill)** |
 | **[stop-slop](stop-slop/)** | AI writing pattern removal — eliminates predictable AI tells from prose. Pattern references for phrases, structures, and examples. Use for copywriting, summaries, proposals, editorial, and redaksi. | **[hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)** |
 | **[security-review](security-review/)** | Three-layer security review — Layer 1: pattern warnings (unsafe deserialization, XSS, hardcoded secrets, SQL injection, eval). Layer 2: LLM diff review. Layer 3: cross-file data flow tracing. HARD GATE for auth/user-input/database/file-upload/API code. | **Original** (Inspired by Anthropic's `security-guidance` plugin and `obra/superpowers` methodology) |
+
+> 💡 **`code-review` skill is installed separately** via the [awesome-skills/code-review-skill](https://github.com/awesome-skills/code-review-skill) upstream repo (not bundled in this collection to keep this repo lean).
 
 ### 🔧 Configuration & Utilities
 
@@ -132,7 +133,6 @@ This keeps token usage minimal even with 17+ skills installed.
 
 | Trigger | Skill |
 |---------|-------|
-| "Review this PR / code change" | `code-review` |
 | "Check security of this code" | `security-review` |
 | "Summarize a YouTube video" | `youtube-summarizer` |
 | "Design a logo / banner / brand" | `design`, `banner-design`, `brand` |
@@ -157,7 +157,6 @@ This collection adapts and builds upon several open-source projects. Each skill'
 | Project | Author | License |
 |---------|--------|---------|
 | [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | [nextlevelbuilder](https://github.com/nextlevelbuilder) | MIT |
-| [code-review-skill](https://github.com/awesome-skills/code-review-skill) | [awesome-skills](https://github.com/awesome-skills) | MIT |
 | [stop-slop](https://github.com/hardikpandya/stop-slop) | [hardikpandya](https://github.com/hardikpandya) | MIT |
 | [state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) | [janwilmake](https://github.com/janwilmake) | MIT |
 | [9router](https://github.com/decolua/9router) | [decolua](https://github.com/decolua) | MIT |
@@ -182,10 +181,6 @@ The following skills were created from scratch for this collection:
 - `project-schedule` — MS Project XML generation
 - `security-review` — Three-layer security review (inspired by Anthropic's security-guidance)
 - `youtube-summarizer` — YouTube transcript analysis
-
-### Flutter/Dart Addition
-
-The `code-review/reference/flutter-dart.md` guide was added to this collection, adapted from the [datit309/supergraph Flutter review checklist](https://github.com/datit309/supergraph) and the [mturac/everything-openai-codex Flutter review guide](https://github.com/mturac/everything-openai-codex). It covers Dart 3, Flutter widgets, state management (BLoC, Riverpod, Provider, GetX, MobX, Signals), performance, accessibility, and security.
 
 ---
 

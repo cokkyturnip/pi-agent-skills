@@ -18,15 +18,15 @@ $ClaudeSkillDir = "$env:USERPROFILE\.claude\skills"
 
 $Mandatory = @("sync-upstream")
 
-$OurScripts = @("configure-pi", "configure-9router", "code-review", "youtube-summarizer", "sync-upstream", "project-schedule", "cleanup-sessions")
+$OurScripts = @("configure-pi", "configure-9router", "youtube-summarizer", "sync-upstream", "project-schedule", "cleanup-sessions")
 
 $Skills = @(
   "banner-design",      "brand",             "cleanup-sessions"
-  "code-review",        "configure-9router",  "configure-pi"
-  "design",             "design-system",     "notion"
-  "project-schedule",   "security-review",   "slides"
-  "state-of-llm-apis",  "stop-slop",         "sync-upstream"
-  "ui-styling",         "ui-ux-pro-max",     "youtube-summarizer"
+  "configure-9router",  "configure-pi",      "design"
+  "design-system",      "notion",            "project-schedule"
+  "security-review",    "slides",            "state-of-llm-apis"
+  "stop-slop",          "sync-upstream",     "ui-styling"
+  "ui-ux-pro-max",      "youtube-summarizer"
 )
 
 # State: all 1 (selected) by default

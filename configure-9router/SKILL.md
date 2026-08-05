@@ -9,7 +9,118 @@ This skill provides the operational framework for classifying, configuring, and 
 
 ---
 
-## 0. 9router Config Tables (SQLite, default: ~/.9router/db/data.sqlite)
+## 0. Cross-Platform Path Handling
+
+> ⚠️ **IMPORTANT**: On Windows, paths behave differently than on Linux/macOS. Always use the correct path resolution for the current OS.
+
+### 9router Data Directory
+
+| OS | Path |
+|---|---|
+| **Windows** | `%APPDATA%/9router/` → `C:\Users\<user>\AppData\Roaming\9router\` |
+| **Linux/macOS** | `~/.9router/` |
+
+The database is at `{9routerDir}/db/data.sqlite`.
+
+### Resolving the Path in Commands
+
+- **Bash (Git Bash on Windows)**: Use `$APPDATA` env var:
+  ```bash
+  DB_PATH="$APPDATA/9router/db/data.sqlite"
+  sqlite3 "$DB_PATH" "SELECT ..."
+  ```
+- **Node.js**: Use `process.env.APPDATA` or `os.homedir()`:
+  ```js
+  const path = require('path');
+  const os = require('os');
+  const dataDir = process.env.APPDATA || (process.platform === 'win32' ? path.join(os.homedir(), 'AppData', 'Roaming') : path.join(os.homedir(), '.9router'));
+  const dbPath = path.join(dataDir, '9router', 'db', 'data.sqlite');
+  ```
+
+### Common Windows Pitfalls
+
+| Issue | Symptom | Fix |
+|---|---|---|
+| `~/.9router` not found | `ENOENT` on `~/.9router/db/data.sqlite` | Use `%APPDATA%/9router/db/data.sqlite` instead |
+| `/tmp/` not found | `ENOENT` on temp files | Use `./` (current dir) or `%TEMP%` on Windows |
+| `/dev/stdin` not found | `ENOENT` when piping to node | Read files with `fs.readFileSync` instead of stdin |
+| `python3` not found | `ENOENT` or Store redirect | Use `node -e` instead of `python3 -c` |
+| `find /` extremely slow | Command times out | Use `find` with specific paths and `-maxdepth` |
+| `sqlite3` CLI not installed | `command not found` | Use Node.js with `better-sqlite3` or the 9router API |
+
+### 9router API as Alternative to SQLite
+
+When direct SQLite access is unreliable (e.g., `sqlite3` CLI not installed), use the 9router REST API:
+
+| Operation | Endpoint | Method |
+|---|---|---|
+| List provider nodes | `/api/provider-nodes` | GET |
+| Create provider node | `/api/provider-nodes` | POST |
+| Update combo | `/api/combos/{id}` | PUT |
+| List combos | `/api/combos` | GET |
+| Update settings | `/api/settings` | PATCH |
+| List custom models | `/api/models/custom` | GET |
+| Add custom model | `/api/models/custom` | POST |
+
+Auth: Include header `x-9r-cli-token` (see §0 below for token generation).
+
+### CLI Token Generation
+
+The 9router CLI token is computed from the machine ID and CLI secret:
+
+```js
+const crypto = require('crypto');
+const fs = require('fs');
+const machineId = fs.readFileSync(path.join(dataDir, '9router', 'machine-id'), 'utf8').trim();
+const secret = fs.readFileSync(path.join(dataDir, '9router', 'auth', 'cli-secret'), 'utf8').trim();
+const token = crypto.createHash('sha256').update(machineId + '9r-cli-auth' + secret).digest('hex').substring(0, 16);
+```
+
+---
+
+## 1.5 Install Differences: Mac vs Windows (npm)
+
+> The install command is identical (`npm install -g 9router`), but behavior differs by platform via the `postinstall` hooks.
+
+### Data Directory (from `hooks/sqliteRuntime.js`)
+```js
+process.platform === "win32"
+  ? path.join(process.env.APPDATA || os.homedir(), "9router")      // Windows
+  : path.join(os.homedir(), ".9router");                            // Mac/Linux
+```
+
+| Platform | Data dir | DB path |
+|----------|----------|---------|
+| **Mac** | `~/.9router/` | `~/.9router/db/data.sqlite` |
+| **Windows** | `%APPDATA%/9router/` | `%APPDATA%/9router/db/data.sqlite` |
+
+### Postinstall Differences
+
+| Aspect | Mac | Windows |
+| --- | --- | --- |
+| `better-sqlite3` (native) | Compiled Mach-O binary | Compiled PE/EXE binary (`4d5a` magic). Installed to user-writable `runtime/node_modules` to avoid `EBUSY` lock on `npm i -g` updates |
+| `systray2` | Installed → `runtime/node_modules/systray2` (native macOS menu bar) | **Skipped** — uses PowerShell `NotifyIcon`, no binary needed |
+| Antivirus false positives | None | `systray_windows.exe` may be flagged (e.g. Kaspersky). 9router avoids this by not installing systray on Windows |
+| Legacy `systray` cleanup | Removes old broken `systray@1.0.5` (Mach-O rejected by macOS 14+ dyld) | Removes old `systray` too |
+
+### Runtime Deps Location
+
+Both platforms install native deps to `{dataDir}/runtime/node_modules` (not global npm), so they survive `npm i -g 9router` upgrades and don't depend on global npm state.
+
+### machine-id Source
+
+`node-machine-id` derives the machine ID differently per OS:
+
+| OS | Source |
+| --- | --- |
+| **Mac** | `IOPlatformUUID` (IOKit) |
+| **Windows** | `MachineGuid` from `HKLM\SOFTWARE\Microsoft\Cryptography` |
+
+This ID is used for CLI token generation (see §0) and auth, so tokens differ per system.
+
+---
+
+## 2. 9router Config Tables (SQLite) — main config
 
 The primary configuration of 9router is stored in an SQLite database. To inspect, update configuration, or query the real-time model registry, query these tables:
 
@@ -30,7 +141,7 @@ Common access points:
 
 ---
 
-## 1. Decision Rule Table
+## 3. Decision Rule Table
 
 When determining which combo a model belongs to, use this **priority order** (Reasoning > Code > Chat):
 
@@ -59,7 +170,7 @@ When determining which combo a model belongs to, use this **priority order** (Re
 
 ---
 
-## 2. Combo Creation SOP
+## 4. Combo Creation SOP
 
 ### Step 1: Register Model (if not auto-discovered)
 ```sql
@@ -72,22 +183,30 @@ INSERT INTO kv (scope,key,value) VALUES ('customModels','nvidia/provider/model',
 
 ### Step 2: Create/Update Combo
 ```bash
-ID=$(python3 -c "import uuid;print(uuid.uuid4().hex)")
+# Define DB path cross-platform:
+#   Windows: $APPDATA/9router/db/data.sqlite
+#   Linux/macOS: ~/.9router/db/data.sqlite
+DB="${APPDATA:+$APPDATA/9router/db/data.sqlite}"
+[ -z "$DB" ] && DB="$HOME/.9router/db/data.sqlite"
+ID=$(node -e "console.log(require('crypto').randomUUID())")
 NOW=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
-sqlite3 ~/.9router/db/data.sqlite "INSERT INTO combos (id,name,kind,models,createdAt,updatedAt) VALUES ('$ID','Name-Combo','','[\"provider/model1\",\"provider/model2\"]','$NOW','$NOW');"
+sqlite3 "$DB" "INSERT INTO combos (id,name,kind,models,createdAt,updatedAt) VALUES ('$ID','Name-Combo','','[\"provider/model1\",\"provider/model2\"]','$NOW','$NOW');"
 ```
 
 ### Step 3: Update Meta-Combos
 ```bash
 # Always update ALL 3 meta-combos when adding/changing combos
-sqlite3 ~/.9router/db/data.sqlite "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Chat';"
-sqlite3 ~/.9router/db/data.sqlite "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Thinking';"
-sqlite3 ~/.9router/db/data.sqlite "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Coding';"
+DB="${APPDATA:+$APPDATA/9router/db/data.sqlite}"
+[ -z "$DB" ] && DB="$HOME/.9router/db/data.sqlite"
+sqlite3 "$DB" "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Chat';"
+sqlite3 "$DB" "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Thinking';"
+sqlite3 "$DB" "UPDATE combos SET models='[\"Combo1\",\"Combo2\"]' WHERE name='Coding';"
+```
 ```
 
 ---
 
-## 3. Model Deletion SOP
+## 5. Model Deletion SOP
 
 Model deletion involves a two-stage process: remove the model from the registry (`kv`) and remove the model from combo definitions (`combos`). Both steps must be performed to ensure the model is fully purged from routing.
 
@@ -133,7 +252,7 @@ SELECT id, name FROM combos WHERE models LIKE '%model-id%';
 
 ---
 
-## 4. Combo Audit (Health Check)
+## 6. Combo Audit (Health Check)
 
 Use the `audit_combo.py` script located in the skill directory (`~/.pi/agent/skills/configure-9router/scripts/audit_combo.py`) to inspect the usage status of all models within a combo, including nested models in sub-combos.
 
@@ -155,7 +274,7 @@ python3 ~/.pi/agent/skills/configure-9router/scripts/audit_combo.py Thinking
 - **⚪ Unused Models**: Models present in a combo but never recorded in `usageHistory`.
 
 ### Audit Technical Details:
-- The script reads the default SQLite database path at `~/.9router/db/data.sqlite`.
+- The script reads the default SQLite database path at `~/.9router/db/data.sqlite` (Linux/macOS) or `%APPDATA%/9router/db/data.sqlite` (Windows).
 - Sub-combos are traversed recursively.
 - The script checks **TWO ERROR SOURCES**:
   1. **`usageHistory`**: Records transactions with `status: 'ok'`. Errors here only appear if the request was definitively recorded as a failure in the database.
@@ -176,7 +295,7 @@ python3 ~/.pi/agent/skills/configure-9router/scripts/audit_combo.py Thinking
 
 ---
 
-## 5. Backup & Restore Config
+## 7. Backup & Restore Config
 
 Independent 9router backup/restore tools. Compatible with UI export/import.
 
@@ -199,7 +318,7 @@ python3 ~/.pi/agent/skills/configure-9router/scripts/restore.py -i /path/to/back
 
 ---
 
-## 6. Routing Strategy (via settings table)
+## 8. Routing Strategy (via settings table)
 
 > ⚠️ The `combos.kind` column in SQLite is **NOT read by the router**. Routing strategy lives in the `settings` table.
 
@@ -236,7 +355,7 @@ Total 21 combos active:
 
 ---
 
-## 7. `kind` (Routing Strategy) Values — **DEPRECATED/NOT USED**
+## 9. `kind` (Routing Strategy) Values — **DEPRECATED/NOT USED**
 
 > ⚠️ **CRITICAL DISCOVERY**: The `combos.kind` column in SQLite is **NOT read by the router**. It has no effect on routing behavior.
 
@@ -264,7 +383,7 @@ Then update the JSON `comboStrategies` field with the desired `fallbackStrategy`
 
 ---
 
-## 8. Key Rules (ALWAYS FOLLOW)
+## 10. Key Rules (ALWAYS FOLLOW)
 
 1. **Suffix consistency**: All Model-* combos must use `-Chat`, `-Code`, or `-Thinking` suffix. No bare names.
 2. **Meta-combo alignment**: Meta-combos (`Chat`, `Coding`, `Thinking`) contain ONLY combo names with matching suffix. No mixed content.
