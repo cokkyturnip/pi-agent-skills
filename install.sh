@@ -18,12 +18,14 @@ MANDATORY=("sync-upstream")
 UPSTREAM_SCRIPTS=("brand" "design" "design-system" "ui-styling" "ui-ux-pro-max")
 
 SKILLS=(
-  "banner-design"     "brand"             "cleanup-sessions"
-  "configure-9router"  "configure-pi"      "design"
-  "design-system"     "notion"            "project-schedule"
-  "security-review"   "slides"            "state-of-llm-apis"
-  "stop-slop"         "sync-upstream"     "ui-styling"
-  "ui-ux-pro-max"     "youtube-summarizer"
+  "aws-pricing"       "banner-design"     "brand"
+  "capacity-planning" "cleanup-sessions"  "configure-9router"
+  "configure-pi"      "design"            "design-system"
+  "firebase-pricing"  "github-collaboration" "notion"
+  "project-schedule"  "proposal-creation" "security-review"
+  "slides"            "state-of-llm-apis" "stop-slop"
+  "sync-upstream"     "ui-styling"        "ui-ux-pro-max"
+  "youtube-summarizer"
 )
 
 # State: all selected by default

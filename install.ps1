@@ -21,12 +21,14 @@ $Mandatory = @("sync-upstream")
 $OurScripts = @("configure-pi", "configure-9router", "youtube-summarizer", "sync-upstream", "project-schedule", "cleanup-sessions")
 
 $Skills = @(
-  "banner-design",      "brand",             "cleanup-sessions"
-  "configure-9router",  "configure-pi",      "design"
-  "design-system",      "notion",            "project-schedule"
-  "security-review",    "slides",            "state-of-llm-apis"
-  "stop-slop",          "sync-upstream",     "ui-styling"
-  "ui-ux-pro-max",      "youtube-summarizer"
+  "aws-pricing",          "banner-design",        "brand"
+  "capacity-planning",    "cleanup-sessions",     "configure-9router"
+  "configure-pi",         "design",               "design-system"
+  "firebase-pricing",     "github-collaboration", "notion"
+  "project-schedule",     "proposal-creation",    "security-review"
+  "slides",               "state-of-llm-apis",    "stop-slop"
+  "sync-upstream",        "ui-styling",           "ui-ux-pro-max"
+  "youtube-summarizer"
 )
 
 # State: all 1 (selected) by default
