@@ -4,6 +4,134 @@ Changes tracked by the Model Tracker agent. Most recent entries first.
 
 ---
 
+## 2026-08-01
+
+### 🆕 Google: Gemini 3.6 Flash, Gemini 3.5 Flash-Lite, and Gemini 3.5 Flash Cyber released (2026-07-21) — no 3.5 Pro yet
+
+**Provider:** [Google](models/google.md)  
+On **2026-07-21**, Google shipped **three new Gemini models** for efficiency, latency, and cybersecurity — but the long-awaited **Gemini 3.5 Pro is still unreleased** (Google says it is "currently testing with partners and will make it broadly available as soon as it's ready"). In the same post, Google confirmed it has **started its most ambitious pre-training run yet, for Gemini 4**.
+
+| Model | API name | Input | Output | Cached input | Context | Max output | Knowledge cutoff |
+|---|---|---|---|---|---|---|---|
+| **Gemini 3.6 Flash** | `gemini-3.6-flash` | **$0.75 / 1M** | **$3.75 / 1M** | $0.075 / 1M | 1,000,000 | 64,000 | March 2026 |
+| **Gemini 3.5 Flash-Lite** | `gemini-3.5-flash-lite` | **$0.30 / 1M** | **$2.50 / 1M** | — | 1,000,000 | 64,000 | March 2026 |
+| **Gemini 3.5 Flash Cyber** | `gemini-3.5-flash-cyber` | (not publicly priced) | (not publicly priced) | — | — | — | — |
+
+> ⚠️ **Pricing clarification (verified 2026-08-01):** The launch blog and most early third-party coverage quoted **Gemini 3.6 Flash at $1.50 / $7.50** by comparing to the *pre-July-14* Gemini 3.5 Flash price of $1.50 / $9.00. The **official Gemini Developer API pricing page** (last updated 2026-07-30 UTC) — verified today — shows the current Paid tier at **$0.75 input / $3.75 output** for 3.6 Flash and **$0.75 / $4.50** for 3.5 Flash (i.e., the July 14 50% price cut already applies). 3.6 Flash's output rate ($3.75) is exactly 17% below 3.5 Flash's ($4.50), matching Google's "17% fewer output tokens" efficiency claim. Treat the $1.50/$7.50 figures as stale.
+
+**Gemini 3.6 Flash** is the new Flash-tier workhorse. Per the [Artificial Analysis Index](https://artificialanalysis.ai/models/gemini-3-6-flash), it reduces output token usage by **17%** vs 3.5 Flash (and up to **65%** on DeepSWE by Datacurve) at a lower cost per output token — better coding, knowledge work, and multimodal performance. **Gemini 3.5 Flash-Lite** is the fastest 3.5-class model at **~350 output tokens/second** (Artificial Analysis Index), a large step over 3.1 Flash-Lite (54% vs 31% on Terminal-Bench 2.1; 72.2% vs 60.1% on GDM-MRCR v2). Note: **3.1 Flash-Lite ($0.125/$0.75) is still cheaper per token** — 3.5 Flash-Lite trades raw price for ~2× speed and much stronger agentic performance. **Gemini 3.5 Flash Cyber** is Google's first LLM tuned specifically for cybersecurity (find/validate/patch vulnerabilities); it surfaced **55 confirmed V8 (Chrome JS engine) vulnerabilities** during testing and is in a limited-access CodeMender pilot for governments and trusted partners — **not generally available**.
+
+**Developer action:** If you're on `gemini-3.5-flash` ($0.75/$4.50), `gemini-3.6-flash` is a drop-in efficiency upgrade at the same input price and lower output price. Use `gemini-3.5-flash-lite` for high-throughput subagent fan-out where latency matters more than the lowest per-token cost. Do **not** plan production integrations around Gemini 3.5 Pro (still no API ID, no date).
+
+> ⚠️ **API change (same release):** Google **deprecated the sampling parameters `temperature`, `top_p`, and `top_k`** on the latest Gemini models as of 2026-07-21. See the Latest Gemini Model guide for the replacement. If you set these on raw requests, expect them to be ignored or removed.
+
+Updated: `models/google.md`, `comparison.md`  
+*Source: [Google Blog — Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) (last updated 2026-07-30 UTC) · [Gemini API Release Notes — July 21, 2026](https://ai.google.dev/gemini-api/docs/changelog) — verified 2026-08-01*
+
+---
+
+### 🆕 Google: Gemini Robotics ER 2 in public preview (2026-07-30); ER 1.6 shutting down Aug 31
+
+**Provider:** [Google](models/google.md)  
+On **2026-07-30**, Google released **Gemini Robotics ER 2** in public preview — two embodied-reasoning model endpoints for robotics. Both accept text, image, video, and audio inputs and support function calling with blocking behavior for physical robot actions.
+
+| Endpoint | Use case |
+|---|---|
+| `gemini-robotics-er-2-preview` | Advanced spatial reasoning, agentic code execution, multi-step tool orchestration, video moment finding, progress classification, multi-robot coordination |
+| `gemini-robotics-er-2-streaming-preview` | Optimized for real-time text streaming via the Live API — low-latency robot agents with bidirectional audio + video input |
+
+**Deprecation:** `gemini-robotics-er-1.6-preview` will be **shut down on 2026-08-31**. If you built robotics agents on ER 1.6, migrate to ER 2 before then.
+
+**Developer note:** Specialized embodied-reasoning model — relevant only to teams building physical robot agents, not general LLM API use.
+
+Updated: `models/google.md`, `deprecated.md`  
+*Source: [Gemini API Release Notes — July 30, 2026](https://ai.google.dev/gemini-api/docs/changelog) — verified 2026-08-01*
+
+---
+
+### ⏱️ Anthropic: Claude Opus 4.1 retires 2026-08-05 — migrate to Opus 4.8 (4 days away)
+
+**Provider:** [Anthropic](models/anthropic.md)  
+Anthropic notified developers using **Claude Opus 4.1** (`claude-opus-4-1-20250805`) on 2026-06-05 of its upcoming retirement. The shutdown date is **2026-08-05** — **4 days from today**. After that, calls to `claude-opus-4-1-20250805` will return errors.
+
+| Retiring model | API name | Retirement date | Recommended replacement |
+|---|---|---|---|
+| Claude Opus 4.1 | `claude-opus-4-1-20250805` | **2026-08-05** ⚠️ | `claude-opus-4-8` ($5/$25) — or `claude-opus-5` ($5/$25, newest) |
+
+**Developer action:** Audit configs for `claude-opus-4-1-20250805`. Opus 4.1 was priced at $15/$75 (3× more expensive than Opus 4.8/5), so most teams already moved off it — but check legacy/fallback paths. `claude-opus-4-8` and `claude-opus-5` are both $5/$25; Opus 5 is the recommended target if you want the newest capability (released 2026-07-24).
+
+Updated: `models/anthropic.md`, `deprecated.md`  
+*Source: [Anthropic — Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) — verified 2026-08-01*
+
+---
+
+### ✅ OpenAI: "Priority" processing renamed to "Fast mode" (2026-07-30)
+
+**Provider:** [OpenAI](models/openai.md)  
+OpenAI **renamed Priority processing to Fast mode** on **2026-07-30**. You can use **either** `service_tier: "priority"` **or** `service_tier: "fast"` in your API requests — both are accepted and equivalent. This is a naming change, not a pricing or behavior change. The Priority/Fast tier remains the higher-cost, lower-latency serving option (≈2–2.5× standard rate depending on model).
+
+**Developer action:** None required — `service_tier: "priority"` continues to work. New code should use `service_tier: "fast"`. See the [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode).
+
+Updated: `models/openai.md`  
+*Source: [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-08-01*
+
+---
+
+### ✅ DeepSeek: V4 Flash moved to `DeepSeek-V4-Flash-0731` public beta (2026-07-31); peak pricing still NOT active
+
+**Provider:** [DeepSeek](models/deepseek.md)  
+On **2026-07-31**, the existing `deepseek-v4-flash` API ID was updated to the **`DeepSeek-V4-Flash-0731`** checkpoint (public beta) — a post-training refresh of the Flash model. Pricing is **unchanged**: $0.14 input (cache miss) / $0.0028 (cache hit) / $0.28 output per 1M. The model ID (`deepseek-v4-flash`) is unchanged; only the underlying version advanced. DeepSeek had **not** published open weights for the 0731 update as of July 31 (the April V4 preview checkpoints remain the latest self-hostable weights).
+
+**Responses API:** currently supports only `deepseek-v4-flash`; `deepseek-v4-pro` Responses API support is slated for **early August 2026**.
+
+**Peak/off-peak pricing: still NOT activated (verified 2026-08-01).** The official pricing page still lists a single flat rate with no time-based tiers. The 2× peak-hour surcharge (09:00–12:00 & 14:00–18:00 Beijing Time, UTC+8) announced 2026-06-29 has still not taken effect; DeepSeek committed to a 24-hour advance-notice email before it activates, and none has been sent.
+
+Updated: `models/deepseek.md`  
+*Source: [DeepSeek API Docs — Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing/) — verified 2026-08-01 · [BenchLM DeepSeek pricing (synced 2026-07-31)](https://benchlm.ai/deepseek/api-pricing) — verified 2026-08-01*
+
+---
+
+### ✅ Mistral: July 31 retirements COMPLETED (2026-07-31)
+
+**Provider:** [Mistral](models/mistral.md)  
+As scheduled, the following Mistral models reached their retirement date on **2026-07-31** and are now shut down (calls return errors):
+
+| Retired model | API name | Replacement |
+|---|---|---|
+| Mistral Small 3.2 | `mistral-small-2506` ❌ | `mistral-small-2603` (Mistral Small 4) or `mistral-medium-3-5` |
+| Magistral Small 1.0 | `magistral-small-2509` ❌ | `mistral-medium-3-5` |
+| Devstral 2 | `devstral-2512` ❌ | `mistral-medium-3-5` |
+| Mistral Nemo 12B | `open-mistral-nemo-2407` ❌ | `ministral-3b-2410` (Ministral 3 8B) |
+
+**Developer action:** Update any `model` fields referencing these dated IDs to their replacements above. Next Mistral deadline: `mistral-medium-2508` (Medium 3.1) → `mistral-medium-3-5` on **2026-08-31**.
+
+Updated: `models/mistral.md`, `deprecated.md`  
+*Source: [Mistral Models Overview](https://docs.mistral.ai/models/overview) — verified 2026-08-01*
+
+---
+
+### ⏱️ Deadlines: Key upcoming cutoffs (verified 2026-08-01)
+
+| Deadline | Days | Action |
+|---|---|---|
+| **2026-08-05** | **4 DAYS** 🚨 | Anthropic `claude-opus-4-1-20250805` (Opus 4.1) **retires** → `claude-opus-4-8` or `claude-opus-5` |
+| **2026-08-10** | 9 days | Google `embedding-2-preview` retires → `gemini-embedding-2` |
+| **2026-08-17** | 16 days | Google Imagen 4.0 models retire on Gemini Dev API: `imagen-4.0-*` → `gemini-3.1-flash-image` |
+| **2026-08-31** | 30 days | Google `gemini-robotics-er-1.6-preview` shuts down → `gemini-robotics-er-2-preview` |
+| **2026-08-31** | 30 days | Anthropic Claude Sonnet 5 intro pricing ends → standard $3/$15 (from $2/$10) |
+| **2026-08-31** | 30 days | Mistral `mistral-medium-2508` (Medium 3.1) → `mistral-medium-3-5` |
+| **2026-09-24** | 54 days | OpenAI Sora 2 API shuts down — no announced replacement |
+| **2026-09-30** | 60 days | Mistral `labs-leanstral-1-5` retires |
+| **2026-10-02** | 62 days | Gemini `gemini-2.5-flash-image` retires → `gemini-3.1-flash-image` |
+| **2026-10-16** | 76 days | `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-lite` retire |
+| **2026-11-30** | 121 days | OpenAI Agent Builder shuts down → Agents SDK or ChatGPT Workspace Agents |
+| **2026-12-01** | 122 days | `gpt-image-1-mini`, `gpt-image-1.5`, `chatgpt-image-latest` → `gpt-image-2` |
+| **2027-01-06** | 158 days | OpenAI fine-tuning: last date to create new training jobs |
+
+*Verified 2026-08-01*
+
+---
+
 ## 2026-07-25
 
 ### 🆕 Anthropic: Claude Opus 5 released — same price as Opus 4.8, near Fable 5 quality (verified 2026-07-25)

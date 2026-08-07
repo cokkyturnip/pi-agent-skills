@@ -1,10 +1,86 @@
 # Google Gemini Model Catalog
 
-> **Source:** [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Vertex AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) · [Gemini Deprecations](https://ai.google.dev/gemini-api/docs/deprecations) · **Verified:** 2026-07-14
+> **Source:** [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Vertex AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) · [Gemini Deprecations](https://ai.google.dev/gemini-api/docs/deprecations) · **Verified:** 2026-08-01
 
 ---
 
-## Current Models (Gemini 3.5 — Latest Generation)
+## Current Models (Gemini 3.6 — Latest Generation)
+
+### Gemini 3.6 Flash (Released 2026-07-21 — GA) 🆕 NEW
+
+Google's new Flash-tier workhorse — the top-listed model on the official Gemini Developer API pricing page. Better coding, knowledge work, and multimodal performance than 3.5 Flash at a **lower cost per output token**, plus a large reduction in output token usage (more efficient completions).
+
+| Metric | Value |
+|---|---|
+| API name | `gemini-3.6-flash` |
+| Context window | 1,000,000 tokens |
+| Max output | 64,000 tokens (65,535) |
+| Input (Paid tier) | **$0.75 / 1M** |
+| Output (Paid tier, incl. thinking) | **$3.75 / 1M** |
+| Context caching | $0.075 / 1M |
+| Context caching storage | $1.00 / 1M tokens per hour |
+| Free tier | Not available (paid only at launch) |
+| Knowledge cutoff | March 2026 |
+
+> ⚠️ **Pricing clarification (verified 2026-08-01):** The launch blog quoted $1.50 / $7.50 by comparing to the *pre-July-14* 3.5 Flash price ($1.50/$9.00). The official pricing page (last updated 2026-07-30 UTC) now shows **$0.75 input / $3.75 output** — the July 14 50% price cut already applies. 3.6 Flash's output rate is exactly 17% below 3.5 Flash's $4.50, matching Google's "17% fewer output tokens" claim.
+
+**Key facts:**
+- Released **2026-07-21** alongside Gemini 3.5 Flash-Lite and Gemini 3.5 Flash Cyber; GA (production-ready)
+- Per the [Artificial Analysis Index](https://artificialanalysis.ai/models/gemini-3-6-flash): reduces output token usage by **17%** vs 3.5 Flash — up to **65%** on DeepSWE (Datacurve) — at lower cost per output token
+- Live in Google AI Studio and Vertex AI; rolling out in GitHub Copilot (enterprise admins must enable a policy toggle)
+- Best Google model for high-volume agentic/coding production workloads where output cost dominates
+- **Gemini 3.5 Pro still unreleased** as of 2026-08-01 (see note in Gemini 3.5 Flash section). Google has separately confirmed it started its most ambitious pre-training run yet, for **Gemini 4**.
+
+> ⚠️ **API change (2026-07-21):** Google **deprecated the sampling parameters `temperature`, `top_p`, and `top_k`** on the latest Gemini models. See the Latest Gemini Model guide for the replacement; if you set these on raw requests they will be ignored or removed.
+
+*Source: [Google Blog — Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) (last updated 2026-07-30 UTC) · [Gemini API Release Notes — July 21, 2026](https://ai.google.dev/gemini-api/docs/changelog) — verified 2026-08-01*
+
+---
+
+### Gemini 3.5 Flash-Lite (Released 2026-07-21 — GA) 🆕 NEW
+
+Google's fastest, most cost-effective 3.5-class model — a low-latency, high-throughput subagent option for high-volume automation. A large step over the prior Flash-Lite generation on agentic benchmarks, but **not cheaper per token** than the older Gemini 3.1 Flash-Lite (which remains the cheapest Gemini per-token option).
+
+| Metric | Value |
+|---|---|
+| API name | `gemini-3.5-flash-lite` |
+| Context window | 1,000,000 tokens |
+| Max output | 64,000 tokens (65,535) |
+| Input (Paid tier) | **$0.30 / 1M** |
+| Output (Paid tier) | **$2.50 / 1M** |
+| Free tier | Not available (paid only at launch) |
+| Knowledge cutoff | March 2026 |
+| Speed | ~350 output tokens/sec (per Artificial Analysis Index) |
+
+**Key facts:**
+- Released **2026-07-21** (GA). Distinct model from the older `gemini-3.1-flash-lite` ($0.125/$0.75).
+- Google-published step over 3.1 Flash-Lite: Terminal-Bench 2.1 **54% vs 31%**; GDM-MRCR v2 long-context **72.2% vs 60.1%**; GDPval-AA v2 **1140 vs 642**. Edges prior-gen Gemini 3 Flash on SWE-Bench Pro and OSWorld-Verified.
+- **Use 3.5 Flash-Lite** when latency and agentic throughput matter more than the lowest per-token cost (it is ~2× faster than 3.1 Flash-Lite). **Use 3.1 Flash-Lite** ($0.125/$0.75) for the absolute cheapest per-token Gemini work.
+
+*Source: [Google Blog — Gemini 3.6 Flash, 3.5 Flash-Lite, 3.5 Flash Cyber](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) — verified 2026-08-01*
+
+---
+
+### Gemini 3.5 Flash Cyber (Released 2026-07-21 — limited access) 🆕 NEW
+
+Google's first LLM tuned specifically for **cybersecurity** — find, validate, and patch software vulnerabilities. Designed to be orchestrated with the **CodeMender** code security agent. Approaches the performance of Anthropic's much larger Claude Mythos on cyber tasks (per Google), using explicit chain-of-thought reasoning for vulnerability analysis.
+
+| Metric | Value |
+|---|---|
+| API name | `gemini-3.5-flash-cyber` |
+| Status | **Limited access** — CodeMender pilot for governments and trusted partners only (NOT generally available) |
+| Pricing | Not publicly specified ("lower price per token than larger models" — Google) |
+
+**Key facts:**
+- Surfaced **55 confirmed V8 (Chrome JavaScript engine) vulnerabilities** during testing
+- Limited initial release; BenchLM tracks it but excludes it from public leaderboards pending more non-generated benchmark coverage
+- Not relevant for general LLM API use — flagged for teams doing vulnerability discovery/patching via Google's CodeMender program
+
+*Source: [Google Blog — Gemini 3.6 Flash, 3.5 Flash-Lite, 3.5 Flash Cyber](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/) · [Eden AI — Gemini 3.6 Flash & Flash-Cyber](https://www.edenai.co/post/gemini-3-6-flash-and-flash-cyber-google-s-new-speed-and-security-ai-models) — verified 2026-08-01*
+
+---
+
+## Previous Generation: Gemini 3.5
 
 ### Gemini 3.5 Flash (Released 2026-05-19 — Google I/O 2026)
 
@@ -35,12 +111,12 @@ Google's newest Gemini model, announced at Google I/O 2026. Optimized for **spee
 - ~4× faster output token generation compared to other frontier models
 - Built for long-horizon agentic tasks, complex coding, and multi-step workflows
 - Replaces Gemini 3.1 Pro as the recommended API model for production agentic use
-- **Gemini 3.5 Pro**: Still unreleased as of **2026-07-13**. Model was rebuilt following delayed June window. Community discussion (r/GeminiAI, July 2026) suggests the delay is partly driven by competitive pressure from GPT-5.6 and Grok 4.5. No official release date given. Expected: 2M context, "Deep Think" reasoning, ~$15/$60 per 1M tokens. Limited Vertex AI enterprise preview only. Do not plan production integrations around leaked dates.
+- **Gemini 3.5 Pro**: Still unreleased as of **2026-08-01** — 73+ days past the I/O "next month" (June) target. Google shipped three cheaper Flash-tier models on 2026-07-21 instead and stated 3.5 Pro is "currently testing with partners" with no date. Bloomberg (2026-07-16) reported internal delays hitting performance goals; Google reportedly scrapped and restarted the base model's pretraining. Expected when it ships: 2M context, "Deep Think" reasoning, ~$15/$60 per 1M tokens. Do not plan production integrations around leaked dates. Separately, Google confirmed it has started its most ambitious pre-training run yet, for **Gemini 4**.
 - Grounding with Google Search: 5,000 prompts/month free (shared across Gemini 3 family), then **$14 / 1,000 queries**
 
 **June 2026 updates to Gemini 3.5 Flash:**
 - **Computer Use** (2026-06-24): `gemini-3.5-flash` now supports computer use — can see, reason, and take action across desktop, mobile, and browser environments. Billed at standard Gemini 3.5 Flash token rates. Improves on long-horizon and enterprise automation tasks (continuous software testing, knowledge work). *(Source: [Google Blog — Computer use in Gemini 3.5 Flash](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-computer-use-gemini-3-5-flash/) — 2026-06-24)*
-- **Gemini 3.5 Pro**: Still unreleased as of **2026-07-13**. Delayed from June. Community discussion (r/GeminiAI, July 2026) attributes delay to competitive pressure from GPT-5.6 and Grok 4.5 — "they simply don't have a model that's ready to compete." Expected: 2M context, "Deep Think" reasoning, ~$15/$60 per 1M tokens. Available in limited Vertex AI enterprise preview only.
+- **Gemini 3.5 Pro**: Still unreleased as of **2026-08-01** (see note above). Available only in limited partner/enterprise preview; no public API ID or pricing.
 
 *Source: [Google AI Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) (last updated 2026-07-09 UTC) · [Google Cloud Blog — Google I/O 2026](https://cloud.google.com/blog/products/ai-machine-learning/innovations-from-google-io-26-on-google-cloud) · [Business Insider — Gemini 3.5 Pro delay](https://www.businessinsider.com/google-3-5-pro-july-release-tokens-ai-agents-model-2026-6) — **pricing verified 2026-07-14***
 
@@ -318,6 +394,23 @@ Optimized for **professional design quality**. Reasoning-core for studio-quality
 
 ---
 
+## Gemini Robotics ER 2 (Public Preview — Released 2026-07-30) 🆕 NEW
+
+Embodied-reasoning model endpoints for robotics. Both accept text, image, video, and audio inputs and support function calling with blocking behavior for physical robot actions.
+
+| Endpoint | Use case |
+|---|---|
+| `gemini-robotics-er-2-preview` | Advanced spatial reasoning, agentic code execution, multi-step tool orchestration, video moment finding, progress classification, multi-robot coordination |
+| `gemini-robotics-er-2-streaming-preview` | Optimized for real-time text streaming via the Live API — low-latency robot agents with bidirectional audio + video input |
+
+> ⚠️ **Deprecation:** `gemini-robotics-er-1.6-preview` **shuts down 2026-08-31** — migrate robotics agents to ER 2 before then.
+
+Specialized embodied-AI model — relevant only to teams building physical robot agents, not general LLM API use.
+
+*Source: [Gemini API Release Notes — July 30, 2026](https://ai.google.dev/gemini-api/docs/changelog) · [Gemini Developer API pricing — Gemini Robotics ER 2](https://ai.google.dev/gemini-api/docs/pricing) — verified 2026-08-01*
+
+---
+
 ## Gemma 4 (Open Weights — Released 2026-04-02)
 
 Google's latest open-weight model family. Released under **Apache 2.0** (first Gemma generation with fully permissive license). Built on Gemini 3 research.
@@ -438,6 +531,7 @@ Announced at Google I/O 2026: Google dropped the top-tier Ultra price and added 
 | `gemini-2.5-flash-image` | **2026-10-02** | `gemini-3.1-flash-image` (GA) *(added 2026-07-10)* |
 | `gemini-embedding-001` | 🚨 **2026-07-14** | `gemini-embedding-2` *(added 2026-07-11 — 3 days)* |
 | `embedding-2-preview` | **2026-08-10** | `gemini-embedding-2` *(added 2026-07-11)* |
+| `gemini-robotics-er-1.6-preview` | **2026-08-31** | `gemini-robotics-er-2-preview` *(added 2026-08-01)* |
 | `gemini-3-pro-preview` | Retired 2026-03-09 | `gemini-3.1-pro-preview` |
 
 *Full table: [deprecated.md](../deprecated.md)*

@@ -33,7 +33,9 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 - ARC-AGI-3 scores: Sol 7.78%, Terra 0.8%, Luna 0.18% (vs GPT-5.5 0.43%, Claude Opus 4.8 1.5%, Gemini 3.1 Pro Preview 0.42%)
 - Available across ChatGPT, Codex, and OpenAI API; Microsoft 365 Copilot using GPT-5.6 as preferred model
 
-**Pricing tiers:** Batch/Flex: 50% off; Priority: 2.5× standard rate. **Long-context pricing (>272K tokens):** Input doubles (2×), output rate also rises — see table above. Confirmed on official pricing page 2026-07-17.
+**Pricing tiers:** Batch/Flex: 50% off; Priority/Fast: 2.5× standard rate. **Long-context pricing (>272K tokens):** Input doubles (2×), output rate also rises — see table above. Confirmed on official pricing page 2026-07-17.
+
+> 🆕 **"Priority" renamed to "Fast mode" (2026-07-30):** OpenAI renamed Priority processing to **Fast mode** on 2026-07-30. You can use **either** `service_tier: "priority"` or `service_tier: "fast"` in API requests — both are accepted and equivalent. This is a naming change, not a pricing/behavior change. New code should use `service_tier: "fast"`. See the [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode).
 
 *Source: [OpenAI — GPT-5.6: Frontier intelligence](https://openai.com/index/gpt-5-6/) · [OpenAI — Previewing GPT-5.6 Sol](https://openai.com/index/previewing-gpt-5-6-sol/) · [OpenAI Help Center — GPT-5.6](https://help.openai.com/en/articles/20001325-a-preview-of-gpt-56-sol-terra-and-luna) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-07-10*
 
