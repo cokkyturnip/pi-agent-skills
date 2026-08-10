@@ -2,7 +2,7 @@
 
 A living knowledge base of LLM API specs, pricing, and changes — maintained automatically by the Model Tracker agent.
 
-**Last updated:** 2026-04-10
+**Last updated:** 2026-08-08
 
 ---
 
@@ -13,14 +13,14 @@ A living knowledge base of LLM API specs, pricing, and changes — maintained au
 | [comparison.md](comparison.md) | Side-by-side pricing and feature matrix for all major providers |
 | [changelog.md](changelog.md) | Chronological log of model releases, price changes, deprecations |
 | [deprecated.md](deprecated.md) | Sunset dates and migration paths |
-| [models/openai.md](models/openai.md) | OpenAI — GPT-5.4, GPT-4.1, o3/o4-mini |
-| [models/anthropic.md](models/anthropic.md) | Anthropic — Claude Opus/Sonnet/Haiku 4.x |
-| [models/google.md](models/google.md) | Google — Gemini 2.5 (GA) + Gemini 3.x (preview) |
-| [models/mistral.md](models/mistral.md) | Mistral AI — Large 3, Small 4, Medium 3, Nemo |
-| [models/xai.md](models/xai.md) | xAI — Grok 4.20, Grok 4, Grok 4.1 Fast |
-| [models/deepseek.md](models/deepseek.md) | DeepSeek — V3.2 Chat + Reasoner |
-| [models/cohere.md](models/cohere.md) | Cohere — Command A, R series |
-| [models/meta.md](models/meta.md) | Meta — Llama 4 Scout/Maverick (open weights) |
+| [models/openai.md](models/openai.md) | OpenAI — GPT-5.6 Sol/Terra/Luna, GPT-5.5, GPT-4.1, o3/o4-mini |
+| [models/anthropic.md](models/anthropic.md) | Anthropic — Claude Opus 5/Fable 5, Sonnet 5, Haiku 4.5 |
+| [models/google.md](models/google.md) | Google — Gemini 3.6 Flash, 3.5 Flash-Lite, 3.1 Pro (preview) |
+| [models/mistral.md](models/mistral.md) | Mistral AI — Medium 3.5, Small 4, Large 3, Nemo |
+| [models/xai.md](models/xai.md) | xAI — Grok 4.5, Grok 4.3, Grok 4 |
+| [models/deepseek.md](models/deepseek.md) | DeepSeek — V4 Flash + V4 Pro |
+| [models/cohere.md](models/cohere.md) | Cohere — Command A+, Command A, R series |
+| [models/meta.md](models/meta.md) | Meta — Muse Spark 1.2 (API) + Llama 4 Scout/Maverick (open weights) |
 
 ---
 

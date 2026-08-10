@@ -398,7 +398,7 @@ Anthropic's Claude 5 generation is now substantially shipped. **Claude Opus 5** 
 | Claude Opus 4.7 | Active (legacy) | Not before 2026-11-28 | $5/$25 — previous flagship; still high quality |
 | Claude Opus 4.6 | Active (legacy) | Not before 2026-11-24 | $5/$25 — two generations behind current |
 | Claude Opus 4.5 | Active (legacy) | Not before 2026-11-24 | $5/$25 — same price as newer Opus versions |
-| Claude Opus 4.1 | ⚠️ **Retires 2026-08-05** (4 days) | **2026-08-05** | `claude-opus-4-1-20250805`; $15/$75 — 3× more expensive than Opus 4.8; migrate to `claude-opus-4-8` or `claude-opus-5` (both $5/$25) |
+| Claude Opus 4.1 | ❌ **RETIRED 2026-08-05** | **2026-08-05** | API name `claude-opus-4-1-20250805` — calls now return errors (no redirect). Was $15/$75 (3× Opus 4.8). Migrate to `claude-opus-4-8` or `claude-opus-5` (both $5/$25) |
 | Claude Sonnet 4.5 | Active (legacy) | Not before 2026-09-29 | $3/$15 — same price as Sonnet 4.6 but older |
 | Claude Sonnet 4 | ❌ **RETIRED 2026-06-15** | — | API name `claude-sonnet-4-20250514` — calls return errors; migrate to `claude-sonnet-4-6` |
 | Claude Opus 4 | ❌ **RETIRED 2026-06-15** | — | API name `claude-opus-4-20250514` — calls return errors; migrate to `claude-opus-4-7` or `claude-opus-4-8` |

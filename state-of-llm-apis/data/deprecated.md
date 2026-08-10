@@ -1,12 +1,25 @@
 # Deprecated & Sunset Models
 
-> Track sunset dates and migration paths. **Last updated:** 2026-07-15.
+> Track sunset dates and migration paths. **Last updated:** 2026-08-08.
 >
 > ⚠️ = Deprecated, still accessible. ❌ = Shut down, no longer accessible.
 
 ---
 
 ## Upcoming Shutdowns (Action Required)
+
+### Anthropic — August 5, 2026 ✅ COMPLETED (2026-08-05)
+
+❌ **Shut down.** Claude Opus 4.1 is no longer accessible as of **2026-08-05**. API calls to `claude-opus-4-1-20250805` now **return errors** (no silent redirect, no grace period). Anthropic's model-deprecations page lists it as Retired.
+
+| Model | API name | Deprecated | Shutdown date | Replacement |
+|---|---|---|---|---|
+| Claude Opus 4.1 | `claude-opus-4-1-20250805` | 2026-06-05 | **2026-08-05** ❌ | `claude-opus-4-8` ($5/$25) — or `claude-opus-5` ($5/$25, newest, released 2026-07-24) |
+
+Opus 4.1 was priced at **$15/$75** per 1M (3× more expensive than Opus 4.8/5), so most teams had already moved off it — but check legacy/fallback paths, Bedrock/Vertex aliases, and third-party routing configs. On Google Cloud Vertex AI the partner-model retirement is "not sooner than August 5, 2026"; community reports indicate the Vertex channel also disappeared on/around that date — confirm in your console.  
+*Source: [Anthropic model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) — verified 2026-08-08 · [Google Cloud — Claude Opus 4.1](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude/opus-4-1) — verified 2026-08-08*
+
+---
 
 ### Anthropic — June 15, 2026 ✅ COMPLETED (2026-06-15)
 

@@ -4,6 +4,100 @@ Changes tracked by the Model Tracker agent. Most recent entries first.
 
 ---
 
+## 2026-08-08
+
+### ✅ Anthropic: Claude Opus 4.1 RETIRED on 2026-08-05 — calls now return errors
+
+**Provider:** [Anthropic](models/anthropic.md)  
+As scheduled, **Claude Opus 4.1** (`claude-opus-4-1-20250805`) reached its hard retirement date on **2026-08-05**. Anthropic's official model-deprecations page now lists it as **Retired** ("This model was retired August 5, 2026"). API calls to `claude-opus-4-1-20250805` now **return errors** — there is no grace period and no silent redirect.
+
+| Retiring model | API name | Retirement date | Recommended replacement |
+|---|---|---|---|
+| Claude Opus 4.1 | `claude-opus-4-1-20250805` | **2026-08-05** ❌ | `claude-opus-4-8` ($5/$25) — or `claude-opus-5` ($5/$25, newest, released 2026-07-24) |
+
+**Developer action:** Audit configs (including Bedrock/Vertex aliases and fallback paths) for any remaining `claude-opus-4-1-20250805`. Opus 4.1 was priced at **$15/$75** (3× more expensive than Opus 4.8/5), so most teams already moved off it. `claude-opus-5` is the recommended target if you want the newest capability at the same $5/$25 price.
+
+> 📝 **Vertex AI note:** Google Cloud's partner-model docs list Opus 4.1 retirement as "not sooner than August 5, 2026." Community reports indicate the Vertex channel also disappeared on/around Aug 5 — confirm directly in your cloud console if you relied on it.
+
+Updated: `models/anthropic.md`, `deprecated.md`  
+*Source: [Anthropic — Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) — verified 2026-08-08 · [Google Cloud — Claude Opus 4.1](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude/opus-4-1) — verified 2026-08-08*
+
+---
+
+### 🆕 OpenAI: Fast mode now supports long-context requests for GPT-5.6 Sol/Terra/Luna (2026-08-05)
+
+**Provider:** [OpenAI](models/openai.md)  
+On **2026-08-05**, OpenAI extended **Fast mode** to long-context requests for the entire **GPT-5.6** family (`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`). Prompts **exceeding 272K tokens** can now run in Fast mode, delivering **up to 2.5× faster** speeds than the Standard tier. Previously, long-context requests could not use Fast/Priority processing.
+
+| Capability | Before (≤ 2026-08-04) | After (2026-08-05) |
+|---|---|---|
+| Fast mode on standard-context (≤272K) | ✅ Yes (2.5× speed, 2× price) | ✅ Yes |
+| Fast mode on long-context (>272K) | ❌ Not supported | ✅ **Now supported** (up to 2.5× speed) |
+
+**Pricing reminder (unchanged rates, verified 2026-07-17):** Long-context (>272K) requests bill input at **2×** the standard rate (Sol $10, Terra $5, Luna $2 per 1M); Fast mode bills at **2×** the applicable standard rate. Combined long-context + Fast pricing follows the [official pricing page](https://developers.openai.com/api/docs/pricing). Use `service_tier: "fast"` (the `priority` alias still works, renamed 2026-07-30).
+
+**Developer action:** Long-running agentic/retrieval workloads that previously had to choose between speed (Fast mode, ≤272K) and full context can now use both. No code change required if you already pass `service_tier: "fast"`; long-context requests will simply be accepted.
+
+Updated: `models/openai.md`  
+*Source: [OpenAI API Changelog — Aug 5, 2026](https://developers.openai.com/api/docs/changelog) · [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-08-08*
+
+---
+
+### 🆕 Meta: Muse Spark 1.2 public API launched (2026-08-05) — Meta's first GA proprietary LLM API; two-tier pricing; powers Muse Code
+
+**Provider:** [Meta](models/meta.md)  
+On **2026-08-05**, Meta launched **Muse Spark 1.2** (`muse-spark-1.2`) — the **first generally-available proprietary LLM API from Meta** (the original Muse Spark, released 2026-04-08, was consumer-only with no public API). It is a reasoning model from Meta Superintelligence Labs, built for complex agentic tasks, and it **powers Muse Code**, Meta's new terminal coding agent for large codebases. Available via the Meta developer API, OpenRouter, Vercel AI Gateway, NanoGPT, and Kilo Gateway.
+
+**Two-tier pricing** (same model; tiers differ only in whether Meta uses your data):
+
+| Tier | Input | Cached input | Output | Data use | Context |
+|---|---|---|---|---|---|
+| **Standard** | **$1.25 / 1M** | $0.15 / 1M | **$4.25 / 1M** | ❌ Meta does **not** use your prompts/outputs | 1,048,576 (~1.05M) |
+| **Contributor** | **$0.10 / 1M** | $0.002 / 1M | **$0.20 / 1M** | ⚠️ Meta **uses** your prompts/outputs to improve products | 1,048,576 (~1.05M) |
+
+| Metric | Value |
+|---|---|
+| API model ID | `muse-spark-1.2` (OpenRouter: `meta/muse-spark-1.2`) |
+| Max output | 131,072 tokens (131K) |
+| Modalities | Input: text, image, video, PDF, audio · Output: text |
+| Capabilities | Reasoning (extended thinking), tool calling, structured output, attachments |
+| Open weights | ❌ No (proprietary) |
+| Temperature control | ✅ Yes |
+
+**Why it matters:** Muse Spark 1.2's Standard output price ($4.25/1M) **undercuts every other frontier lab** by 6–12× on output, and the Contributor tier (~12–21× cheaper than Standard) trades data privacy for near-free pricing — aimed squarely at open-source contributors. Keep Contributor off any prompt containing client data, PII, or trade secrets; route those to Standard.
+
+**Developer action:** Muse Spark 1.2 is a credible new budget/mid-tier option for agentic and coding workloads with a 1M+ context window. Rate limits, enterprise SLAs, and OpenAI-SDK compatibility are **not published at launch** — verify on the [Muse Code product page](https://developer.meta.com/ai/products/muse-code/) before production commitments. Meta's open-weight Llama 4 line is unaffected and remains the self-hostable option.
+
+Updated: `models/meta.md`, `comparison.md`  
+*Source: [Meta — Muse Code product page](https://developer.meta.com/ai/products/muse-code/) · [OpenRouter — meta/muse-spark-1.2](https://openrouter.ai/meta/muse-spark-1.2) · [modelcompare.dev — Muse Spark 1.2](https://modelcompare.dev/models/meta/muse-spark-1-2) · [Layer3 Labs — Muse Spark 1.2 pricing](https://www.layer3labs.io/guides/muse-spark-1-2-pricing) (quoting Meta launch email) — verified 2026-08-08*
+
+---
+
+### ✅ DeepSeek: V4-Flash-0731 open weights ARE published (MIT, ~167 GB) — correction to the 2026-08-01 note
+
+**Provider:** [DeepSeek](models/deepseek.md)  
+**Correction:** The 2026-08-01 entry stated DeepSeek had "not published open weights for the 0731 update as of July 31." That is **incorrect** — the official weights **were published on Hugging Face on 2026-07-31** (release day), under the **MIT License**.
+
+| Metric | Value |
+|---|---|
+| HuggingFace repo | [`deepseek-ai/DeepSeek-V4-Flash-0731`](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731) |
+| License | **MIT** (commercial use permitted) |
+| Weight size | ~166.9 GB (48 Safetensors shards) |
+| Parameters | 284B total / 13B active (MoE); 304B displayed incl. DSpark draft module |
+| Context / max output | 1,000,000 / 384,000 tokens |
+| Includes | DSpark speculative-decoding draft module (~9 GB larger than the 158 GB preview) |
+
+The 0731 checkpoint is the **official release** of V4-Flash (superseding the April preview), re-post-trained for agentic capability — DeepSeek reports it **outperforms V4-Pro (Preview) on all nine agentic benchmarks** it publishes, despite far fewer active parameters. The hosted API ID (`deepseek-v4-flash`) and pricing ($0.14/$0.28 per 1M) are unchanged.
+
+**Self-hosting caveat:** All 284B weights stay resident in memory though only 13B activate per token ("Flash" = inference cost, not footprint). DeepSeek's reference vLLM recipe targets a single 4× GB300 node; community quantizations (Unsloth) put lossless 8-bit at ~162 GB. MIT-licensed and ungated, so on-prem commercial deployment is permitted.
+
+**Developer action:** If you self-host DeepSeek, the 0731 weights are now the current drop — the April preview is superseded. API callers are unaffected. `deepseek-v4-pro` Responses API support (slated for early August) had **not** shipped as of 2026-08-04 per third-party trackers — confirm the official changelog.
+
+Updated: `models/deepseek.md`  
+*Source: [HuggingFace — DeepSeek-V4-Flash-0731 model card](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731) · [DataNorth — DeepSeek V4-Flash-0731](https://datanorth.ai/news/deepseek-releases-deepseek-v4-flash-0731) · [chat-deep.ai — DeepSeek roadmap](https://chat-deep.ai/guide/deepseek-roadmap-rumors) — verified 2026-08-08*
+
+---
+
 ## 2026-08-01
 
 ### 🆕 Google: Gemini 3.6 Flash, Gemini 3.5 Flash-Lite, and Gemini 3.5 Flash Cyber released (2026-07-21) — no 3.5 Pro yet

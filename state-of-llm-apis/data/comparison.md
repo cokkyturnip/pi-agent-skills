@@ -1,6 +1,6 @@
 # LLM API Comparison Matrix
 
-> **Last updated:** 2026-07-25. Prices per 1M tokens (USD), standard tier unless noted.
+> **Last updated:** 2026-08-08. Prices per 1M tokens (USD), standard tier unless noted.
 
 ---
 
@@ -43,6 +43,7 @@
 | [xAI](models/xai.md) | Grok Build 0.1 | 256 K | $1.00 | $2.00 | Agentic coding; powers Grok Build CLI |
 | [Cohere](models/cohere.md) | Command A+ 🆕 | 128 K | $2.50 | $10.00 | **NEW 2026-05-20** — Apache 2.0 MoE (218B/25B active); vision, 48 langs; requires sales for prod API |
 | [Cohere](models/cohere.md) | Command A | 256 K | $2.50 | $10.00 | Self-serve flagship; enterprise RAG; citation support |
+| [Meta](models/meta.md) | Muse Spark 1.2 🆕 | 1.05 M | $1.25 | $4.25 | **NEW GA 2026-08-05** — Meta's first proprietary LLM API; reasoning + tool use; powers Muse Code. Contributor tier $0.10/$0.20 (Meta uses your data). ❌ Not open weights |
 | [Meta](models/meta.md) | Llama 4 Maverick | 1 M | ~$0.15 | ~$0.60 | Open weights; self-hostable |
 
 ---

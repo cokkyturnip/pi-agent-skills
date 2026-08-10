@@ -28,8 +28,37 @@ First model from Meta Superintelligence Labs. Proprietary (closed weights), rebu
 | Current gaps | Long-horizon agentic systems, coding workflows |
 | Next model | "Watermelon" (in development) |
 
-**Key context:** Meta's shift from open-source Llama to a proprietary model. The company says it may open-source parts of Muse Spark in the future. API pricing not announced; commercial API launch date TBD.  
+**Key context:** Meta's shift from open-source Llama to a proprietary model. The company says it may open-source parts of Muse Spark in the future. The original Muse Spark (1.0) had **no public API**; the public commercial API arrived with **Muse Spark 1.2** on 2026-08-05 (see below).  
 *Source: [Meta blog](https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/), TechCrunch, NYT — 2026-04-08*
+
+---
+
+## Muse Spark 1.2 (Released 2026-08-05) 🆕 — First GA Meta Proprietary LLM API
+
+The **first generally-available proprietary LLM API from Meta**, and the current Muse flagship. A reasoning model from Meta Superintelligence Labs built for complex agentic tasks; **powers [Muse Code](https://developer.meta.com/ai/products/muse-code/)**, Meta's terminal coding agent for large codebases. Available via the Meta developer API, OpenRouter (`meta/muse-spark-1.2`), Vercel AI Gateway, NanoGPT, and Kilo Gateway.
+
+**Two-tier pricing** — same model; tiers differ only in whether Meta uses your data:
+
+| Tier | Input / 1M | Cached input / 1M | Output / 1M | Data use |
+|---|---|---|---|---|
+| **Standard** | **$1.25** | $0.15 | **$4.25** | ❌ Meta does **not** use your prompts/outputs |
+| **Contributor** | **$0.10** | $0.002 | **$0.20** | ⚠️ Meta **uses** your prompts/outputs to improve products |
+
+| Metric | Value |
+|---|---|
+| API model ID | `muse-spark-1.2` |
+| Context window | 1,048,576 tokens (~1.05M) |
+| Max output | 131,072 tokens (131K) |
+| Modalities | Input: text, image, video, PDF, audio · Output: text |
+| Capabilities | Reasoning (extended thinking), tool calling, structured output, attachments, temperature control |
+| Open weights | ❌ No (proprietary) |
+
+**Notes:**
+- Standard output ($4.25/1M) **undercuts other frontier labs by 6–12×**; Contributor (~12–21× cheaper than Standard) is aimed at open-source contributors but **must not** be used for prompts with client data, PII, or trade secrets — route those to Standard.
+- **Not published at launch:** rate limits, enterprise SLAs, OpenAI-SDK compatibility, free tier. Verify on the [Muse Code product page](https://developer.meta.com/ai/products/muse-code/) before production commitments.
+- Meta's open-weight **Llama 4** line is unaffected and remains the self-hostable option (see below).
+
+*Source: [Meta — Muse Code product page](https://developer.meta.com/ai/products/muse-code/) · [OpenRouter — meta/muse-spark-1.2](https://openrouter.ai/meta/muse-spark-1.2) · [modelcompare.dev — Muse Spark 1.2](https://modelcompare.dev/models/meta/muse-spark-1-2) · [Layer3 Labs pricing](https://www.layer3labs.io/guides/muse-spark-1-2-pricing) — verified 2026-08-08*
 
 ---
 

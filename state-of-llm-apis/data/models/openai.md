@@ -37,6 +37,8 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 
 > 🆕 **"Priority" renamed to "Fast mode" (2026-07-30):** OpenAI renamed Priority processing to **Fast mode** on 2026-07-30. You can use **either** `service_tier: "priority"` or `service_tier: "fast"` in API requests — both are accepted and equivalent. This is a naming change, not a pricing/behavior change. New code should use `service_tier: "fast"`. See the [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode).
 
+> 🆕 **Fast mode now supports long-context requests (2026-08-05):** Fast mode was extended to long-context prompts for `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna`. Requests **exceeding 272K tokens** can now run in Fast mode — up to **2.5× faster** than the Standard tier. Previously, long-context requests could not use Fast/Priority processing. Long-context (>272K) still bills input at 2× the standard rate; Fast mode still bills at 2× the applicable rate. See [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode) and [pricing](https://developers.openai.com/api/docs/pricing). Verified 2026-08-08.
+
 *Source: [OpenAI — GPT-5.6: Frontier intelligence](https://openai.com/index/gpt-5-6/) · [OpenAI — Previewing GPT-5.6 Sol](https://openai.com/index/previewing-gpt-5-6-sol/) · [OpenAI Help Center — GPT-5.6](https://help.openai.com/en/articles/20001325-a-preview-of-gpt-56-sol-terra-and-luna) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-07-10*
 
 ---
