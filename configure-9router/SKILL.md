@@ -295,6 +295,61 @@ python3 ~/.pi/agent/skills/configure-9router/scripts/audit_combo.py Thinking
 
 ---
 
+## 6.5 Fix "Provider test not supported"
+
+When a provider shows `testStatus: "error"` and `lastError: "Provider test not supported"`, the cause is a **missing `switch` case in the provider test utility** — not a bad API key or combo issue.
+
+### Diagnosis
+```bash
+DB="${APPDATA:+$APPDATA/9router/db/data.sqlite}"
+[ -z "$DB" ] && DB="$HOME/.9router/db/data.sqlite"
+sqlite3 "$DB" "SELECT provider, json_extract(data,'$.testStatus'), json_extract(data,'$.lastError') FROM providerConnections WHERE provider='<alias>';"
+```
+Confirmed if output shows `error` + `Provider test not supported`.
+
+### Fix Location
+File: `src/app/api/providers/[id]/test/testUtils.js` in the 9router repo.
+
+Inside `testApiKeyConnection(connection, effectiveProxy)`, add a new `case` before `default:`. Get the base URL from the provider registry at `open-sse/providers/registry/<alias>.js` → `transport.validateUrl` (strip `/models`):
+
+```js
+case "<alias>": {
+  const baseUrl = connection.providerSpecificData?.baseUrl || "<validate-url-minus-/models>";
+  const res = await fetchWithConnectionProxy(`${baseUrl.replace(/\/$/, "")}/models`, {
+    headers: { Authorization: `Bearer ${connection.apiKey}` },
+  }, effectiveProxy);
+  return { valid: res.ok, error: res.ok ? null : "Invalid API key or base URL" };
+}
+```
+
+### Build & Restart
+- Only `npm run build` at repo root is needed (the CLI bundle does NOT include API routes).
+- After build, restart: `kill <9router-pid>` then `nohup npm start > router.log 2>&1 &`
+- Test provider in WebUI → must show active.
+
+### Workflow
+1. `git checkout master && git pull upstream master`
+2. `git checkout -b fix/<provider>-provider-test`
+3. Add `case` in `testUtils.js`
+4. Build: `npm run build`
+5. Restart service, test in WebUI
+6. Commit, push, create PR to upstream
+
+### PR Rules
+- **Each provider fix is an INDEPENDENT PR.** Never reference other pending PRs in the body — reviewers have no context for them.
+- Body: what was added, which endpoint it tests, tested locally after build+restart.
+- No CONTRIBUTING.md exists in the repo (as of 0.5.50) — follow the conventional-commit style used by existing fix branches.
+
+### Common Mistakes
+| Mistake | Fix |
+|---|---|
+| Updating registry only | Registry ≠ test handler; both needed |
+| Building CLI for API-route changes | Only `npm run build` (root) needed |
+| Referencing other open PRs in body | Keep each PR independent |
+| Guessing the base URL | Read from `open-sse/providers/registry/<alias>.js` |
+
+---
+
 ## 7. Backup & Restore Config
 
 Independent 9router backup/restore tools. Compatible with UI export/import.
