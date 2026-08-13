@@ -118,6 +118,32 @@ gh pr create \
 - Respond to review feedback promptly
 - Once merged, clean up your branch and fork if desired
 
+## Maintaining a Long-Lived Fork (Sync from Upstream)
+
+When you fork not just to submit a one-off PR but to **keep a modified copy for your own use** (for example, consuming the fork as a dependency), the fork must keep receiving upstream updates without losing your changes or piling conflicts onto `main`.
+
+**A fork does not auto-sync.** `origin/main` (your fork) only equals `upstream/main` at fork time. Upstream advances on its own; your fork stays put until you pull. Add or confirm the `upstream` remote (the `gh repo fork --remote` flag does this automatically):
+
+```bash
+git remote add upstream https://github.com/<owner>/<repo>.git
+```
+
+**Sync strategy — keep `main` clean with a buffer branch.** Never merge upstream directly into `main`, and avoid the GitHub UI "Sync fork" button (it merges `upstream/main` into your fork's *default branch*, with no branch selector, so conflicts land on `main`). Use a separate buffer branch to absorb upstream and resolve conflicts, then fast-forward `main`:
+
+```bash
+git fetch upstream
+git checkout -b sync upstream/main          # buffer = latest upstream
+git cherry-pick <sha-fix1> <sha-fix2>        # or: git merge fix/issue1 fix/issue2
+# resolve any conflicts HERE (on sync, not main)
+git checkout main
+git merge --ff-only sync                    # main = clean fast-forward, zero conflict surface
+git push origin main sync
+```
+
+- `sync` (or `integration`) is a volatile buffer: it may be rebased/force-pushed and can be mid-resolution. **Do not make it the default branch.**
+- Keep **`main` as the default branch**: `git clone` without a branch checks out the default, and `npm install github:<you>/<repo>` consumes it. `main` stays stable because it only ever receives a fast-forward from `sync`.
+- Use **branch-per-issue** (`fix/issue1`, `fix/issue2`) so each change is isolated and PRs to `upstream/main` stay clean. Rebase a fix branch onto `upstream/main` before opening or updating its PR.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -127,6 +153,8 @@ gh pr create \
 | Vague PR title | Use clear, descriptive titles |
 | Ignoring CI failures | Fix them before asking for review |
 | Merging without approval | Wait for maintainer approval |
+| Using the UI "Sync fork" button | It merges upstream into your default branch (`main`), adding conflict risk there; sync via CLI into a buffer branch, then fast-forward `main` |
+| Assuming the fork stays in sync | Forks never auto-update; `git fetch upstream` + merge/rebase manually when you choose |
 
 ## Quick Reference
 
@@ -139,6 +167,9 @@ gh pr create \
 | Push branch | `git push -u origin <branch>` |
 | Create PR | `gh pr create --repo <owner>/<repo>` |
 | Check PR status | `gh pr checks <pr-number> --repo <owner>/<repo>` |
+| Sync fork from upstream (buffer) | `git fetch upstream && git checkout sync && git merge upstream/main` |
+| Promote clean buffer to main | `git checkout main && git merge --ff-only sync && git push origin main sync` |
+| Rebase a fix branch onto upstream | `git checkout fix/issue1 && git rebase upstream/main` |
 
 ## Real-World Impact
 
