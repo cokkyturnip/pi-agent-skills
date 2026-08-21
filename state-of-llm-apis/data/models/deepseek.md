@@ -1,6 +1,6 @@
 # DeepSeek Model Catalog
 
-> **Source:** [DeepSeek API Docs](https://api-docs.deepseek.com/quick_start/pricing) · **Verified:** 2026-08-01
+> **Source:** [DeepSeek API Docs](https://api-docs.deepseek.com/quick_start/pricing) · [Reuters](https://www.reuters.com/world/china/deepseek-raises-api-pricing-its-v4-models-2026-08-13) · **Verified:** 2026-08-15
 
 ---
 
@@ -14,19 +14,23 @@ DeepSeek's latest generation. Two variants with 1M context, both open-weight. Bo
 
 | Model | API name | Context | Max output | Input (cache miss) | Input (cache hit) | Output |
 |---|---|---|---|---|---|---|
-| V4 Flash | `deepseek-v4-flash` | 1,000,000 tokens | 384,000 tokens | **$0.14 / 1M** | $0.0028 / 1M | **$0.28 / 1M** |
-| V4 Pro | `deepseek-v4-pro` | 1,000,000 tokens | 384,000 tokens | **$0.435 / 1M** | $0.003625 / 1M | **$0.87 / 1M** |
+| V4 Flash | `deepseek-v4-flash` | 1,000,000 tokens | 384,000 tokens | $0.14 / 1M *(legacy flat rate)* | $0.0028 / 1M *(legacy)* | $0.28 / 1M *(legacy)* |
+| V4 Pro | `deepseek-v4-pro` | 1,000,000 tokens | 384,000 tokens | $0.435 / 1M *(legacy flat rate)* | $0.003625 / 1M *(legacy)* | $0.87 / 1M *(legacy)* |
 
-> ✅ **V4 Pro promotional price is now permanent.** On **2026-05-24**, DeepSeek made the 75% discount permanent — the list price was lowered from $1.74/$3.48 to $0.435/$0.87. This is the ongoing price, not a promotional rate. *Source: [The Next Web](https://thenextweb.com/news/deepseek-v4-pro-75-percent-price-cut-permanent) — 2026-05-24 · [Official pricing docs](https://api-docs.deepseek.com/quick_start/pricing) confirmed $0.435/$0.87 as current price — verified 2026-07-11*
+> ✅ **V4 Pro promotional price was made permanent (2026-05-24)** — the 75% discount lowered list price from $1.74/$3.48 to $0.435/$0.87. *That* permanent list price has since been superseded by the peak/off-peak rates below. *Source: [The Next Web](https://thenextweb.com/news/deepseek-v4-pro-75-percent-price-cut-permanent) — 2026-05-24 · verified 2026-07-11*
 
-> 🚨 **Peak/off-peak pricing still NOT activated (verified 2026-08-01).** DeepSeek announced (2026-06-29) that the stable V4 release would introduce **time-of-day pricing** — approximately 2× rates during peak hours. As of 2026-07-24, the pricing page still shows flat rates. A 24-hour advance notice email will be sent before the change activates; no such notice has been sent. **Watch your email.** Announced rates:
+> 🚨 **Peak/off-peak pricing ACTIVATED — effective 2026-08-16 16:00 UTC (verified 2026-08-15).** DeepSeek has set the activation date for time-of-day billing. **Peak hours: 01:00–04:00 & 06:00–10:00 UTC** (= 09:00–12:00 & 14:00–18:00 Beijing time); all other hours are **off-peak**. **Peak rates = 2× off-peak.** Both off-peak and peak rates are **higher than the prior flat rates** — increases range from ~50% to ~1,100% (cache hits hit hardest). The `deepseek-v4-pro` model version also advanced to **DeepSeek-V4-Pro-0813**.
 >
-> | Period | Hours (Beijing Time, UTC+8) | V4 Flash input | V4 Flash output | V4 Pro input | V4 Pro output |
-> |---|---|---|---|---|---|
-> | Off-peak (regular) | All other hours | $0.14 / 1M | $0.28 / 1M | $0.435 / 1M | $0.87 / 1M |
-> | Peak | 09:00–12:00 & 14:00–18:00 | ~$0.29 / 1M | ~$0.59 / 1M | ~$0.88 / 1M | ~$1.76 / 1M |
+> | Model | Token type | Legacy (flat) | NEW OFF-PEAK | NEW PEAK (2×) |
+> |---|---|---|---|---|
+> | `deepseek-v4-flash` | Input (cache hit) | $0.0028 | $0.007 | $0.014 |
+> | `deepseek-v4-flash` | Input (cache miss) | $0.14 | $0.22 | $0.44 |
+> | `deepseek-v4-flash` | Output | $0.28 | $0.66 | $1.32 |
+> | `deepseek-v4-pro` | Input (cache hit) | $0.003625 | $0.022 | $0.044 |
+> | `deepseek-v4-pro` | Input (cache miss) | $0.435 | $0.66 | $1.32 |
+> | `deepseek-v4-pro` | Output | $0.87 | $1.98 | $3.96 |
 >
-> A 24-hour advance notice will be sent before the change takes effect. Continued API usage after the notice = acceptance of new pricing. Opt-out (with refund) available before the change. Cache hit rates also double during peak hours. This is the first time DeepSeek has introduced time-based surcharging. *Source: [Reddit r/DeepSeek](https://www.reddit.com/r/DeepSeek/comments/1uio6yf/) · [Tech Buzz China on X](https://x.com/TechBuzzChina/status/2071745549917688075) — 2026-06-29 · verified 2026-07-11*
+> **Developer action:** Continued API usage after 16:00 UTC Aug 16 = acceptance of new pricing. Shift traffic to **off-peak** hours to halve cost; re-evaluate V4-Pro vs V4-Flash routing (the Pro cache-hit increase is the steepest, ~6× off-peak). DeepSeek supports both OpenAI- and Anthropic-compatible API formats, so failover to another provider needs only an endpoint/model swap. Compare against budget alternatives: Gemini 3.1 Flash-Lite ($0.125/$0.75), GPT-4.1 Nano ($0.10/$0.40). *Source: [DeepSeek API Docs — Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing) · [Reuters — DeepSeek raises API pricing for its V4 models](https://www.reuters.com/world/china/deepseek-raises-api-pricing-its-v4-models-2026-08-13) — verified 2026-08-15*
 
 **V4 Flash moved to `DeepSeek-V4-Flash-0731` (2026-07-31):** The `deepseek-v4-flash` API ID was advanced to the `DeepSeek-V4-Flash-0731` checkpoint (public beta) — the **official release** of V4-Flash, superseding the April preview, re-post-trained for agentic capability. **Pricing and the model ID are unchanged.** Open weights **are published** under the **MIT License** at [`deepseek-ai/DeepSeek-V4-Flash-0731`](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731) (~166.9 GB, 48 Safetensors shards, released 2026-07-31; 284B total / 13B active MoE, incl. DSpark speculative-decoding draft module). *(Correction: a prior note here said weights were not published as of July 31 — they were, same day.)* DeepSeek reports the 0731 checkpoint outperforms V4-Pro (Preview) on all nine agentic benchmarks it publishes. The **Responses API** currently supports only `deepseek-v4-flash`; `deepseek-v4-pro` Responses API support is slated for **early August 2026** (not yet shipped as of 2026-08-08). *Source: [HuggingFace — DeepSeek-V4-Flash-0731](https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash-0731) · [DeepSeek API Docs](https://api-docs.deepseek.com/quick_start/pricing/) — verified 2026-08-08*
 
@@ -96,7 +100,9 @@ All DeepSeek models are released under permissive open-source licenses:
 
 ## Pricing Context
 
-DeepSeek V4 Flash via official API (cache miss, at current list price):
+> ⚠️ **Comparisons below use the legacy flat rates** ($0.14/$0.28 for Flash, $0.435/$0.87 for Pro). As of **2026-08-16 16:00 UTC**, real billing is **peak/off-peak** (off-peak: Flash $0.22/$0.66, Pro $0.66/$1.98; peak = 2×). Re-derive cost comparisons against the off-peak (or peak) rate for your traffic pattern.
+
+DeepSeek V4 Flash via official API (cache miss, at legacy flat price):
 - V4 Flash ($0.14/$0.28) is ~21× cheaper than Claude Sonnet 4.6 ($3/$15) on input; ~54× cheaper on output
 - ~18× cheaper than GPT-5.4 ($2.50/$15) on input; ~54× cheaper on output
 - Cheaper than Gemini 2.5 Flash ($0.30/$2.50) on both input and output

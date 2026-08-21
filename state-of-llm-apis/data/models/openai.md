@@ -1,6 +1,6 @@
 # OpenAI Model Catalog
 
-> **Source:** [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing) · [OpenAI Models](https://platform.openai.com/docs/models) · **Verified:** 2026-07-17
+> **Source:** [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing) · [OpenAI Models](https://platform.openai.com/docs/models) · [OpenAI API Changelog](https://developers.openai.com/api/docs/changelog) · **Verified:** 2026-08-15
 
 ---
 
@@ -18,6 +18,7 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 | GPT-5.6 Sol Pro | `gpt-5.6-sol-pro` | 1 M tokens | $30.00 | — | — | $180.00 | $60.00 | $270.00 | Highest capability; complex tasks, long workflows |
 | GPT-5.6 Terra | `gpt-5.6-terra` | 1 M tokens | $2.50 | $3.125 | $0.25 | $15.00 | $5.00 | $22.50 | Balanced; competitive with GPT-5.5 at 2× lower cost |
 | GPT-5.6 Luna | `gpt-5.6-luna` | 1 M tokens | $1.00 | $1.25 | $0.10 | $6.00 | $2.00 | $9.00 | Fast, affordable; high-volume and simple tasks |
+| GPT-5.6 Cyber | `gpt-5.6-cyber` | — | $12.50 | $1.25 | $15.625 | $75.00 | — | — | ⚠️ **Controlled access (Daybreak Red)** — cyber fine-tune of Sol; no long-context rate published |
 
 **Key facts:**
 - Limited preview launched **2026-06-26** (government-coordinated); GA rollout began **2026-07-09**
@@ -38,6 +39,10 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 > 🆕 **"Priority" renamed to "Fast mode" (2026-07-30):** OpenAI renamed Priority processing to **Fast mode** on 2026-07-30. You can use **either** `service_tier: "priority"` or `service_tier: "fast"` in API requests — both are accepted and equivalent. This is a naming change, not a pricing/behavior change. New code should use `service_tier: "fast"`. See the [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode).
 
 > 🆕 **Fast mode now supports long-context requests (2026-08-05):** Fast mode was extended to long-context prompts for `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna`. Requests **exceeding 272K tokens** can now run in Fast mode — up to **2.5× faster** than the Standard tier. Previously, long-context requests could not use Fast/Priority processing. Long-context (>272K) still bills input at 2× the standard rate; Fast mode still bills at 2× the applicable rate. See [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode) and [pricing](https://developers.openai.com/api/docs/pricing). Verified 2026-08-08.
+
+> 🆕 **GPT-5.6-Cyber + Daybreak tiers (2026-08-10):** OpenAI launched **`gpt-5.6-cyber`** — a fine-tune of GPT-5.6 Sol purpose-trained for **authorized** cybersecurity work (vuln research, exploit dev, red teaming). **Not self-serve** — gated behind the new **Daybreak Red** tier (approved security teams; requires SOC 2 Type II / ISO 27001 + SSO/MFA/RBAC/monitoring/IR). **Daybreak Blue** gives vetted defenders `gpt-5.6-sol` with adjusted safeguards. **Pricing (short context only, no long-context rate for Cyber):** Cyber $12.50 in / $1.25 cached / $15.625 cache write / $75 out; Sol (via Blue) $5/$0.50/$6.25/$30. **Aliases:** `daybreak-red-latest` → `gpt-5.6-cyber`, `daybreak-blue-latest` → `gpt-5.6-sol` (repointed as new Daybreak models ship). Internal completion rate on advanced cyber requests: Cyber 95.0% vs Sol(Blue) 2.0% vs standard Sol 1.5%. Daybreak models also available on AWS (2026-08-11). See [changelog](changelog.md). Verified 2026-08-15.
+
+> 🆕 **Ultrafast mode — limited preview (2026-08-13):** A new service tier **above Fast mode**, running **GPT-5.6 Sol** at up to **14× Standard speed** / **750 output tokens per second**, powered by **Cerebras** wafer-scale silicon. **Invite-only** limited preview — **no published price, no GA date, no separate model ID** (it is a serving-tier selection on `gpt-5.6-sol`). Vendor-measured (not independent): ~7× faster than Claude Fable 5 on Humanity's Last Exam at comparable accuracy (xhigh); 5.6× GDP-Val speedup with no quality loss. Sign up at [openai.com/form/ultrafast](https://openai.com/form/ultrafast/); Cerebras capacity expands through 2026, AWS Bedrock targeted Q1 2027. Distinct from Fast mode (`service_tier: "fast"`, 2.5× speed, 2× price). Verified 2026-08-15.
 
 *Source: [OpenAI — GPT-5.6: Frontier intelligence](https://openai.com/index/gpt-5-6/) · [OpenAI — Previewing GPT-5.6 Sol](https://openai.com/index/previewing-gpt-5-6-sol/) · [OpenAI Help Center — GPT-5.6](https://help.openai.com/en/articles/20001325-a-preview-of-gpt-56-sol-terra-and-luna) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-07-10*
 

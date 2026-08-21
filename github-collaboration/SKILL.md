@@ -144,6 +144,18 @@ git push origin main sync
 - Keep **`main` as the default branch**: `git clone` without a branch checks out the default, and `npm install github:<you>/<repo>` consumes it. `main` stays stable because it only ever receives a fast-forward from `sync`.
 - Use **branch-per-issue** (`fix/issue1`, `fix/issue2`) so each change is isolated and PRs to `upstream/main` stay clean. Rebase a fix branch onto `upstream/main` before opening or updating its PR.
 
+## Language Policy — Public GitHub Content
+
+GitHub is a public, international platform. Write all public-facing content in **English**, even when the surrounding conversation happens in your native language:
+
+1. Issue titles & bodies
+2. PR titles, bodies & review replies
+3. Comments (including issue comments and code review threads)
+4. README/docs shipped in the repo
+5. Commit messages (repo convention — check CONTRIBUTING.md first)
+
+Private notes (local files, Notion, scratchpads) may stay in your native language — the rule applies to anything that leaves your machine for a shared/public audience. When in doubt: if it will be visible on GitHub, write it in English.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -151,6 +163,7 @@ git push origin main sync
 | Skipping CONTRIBUTING.md | Always read it first — it saves time |
 | Pushing without running CI locally | Run all checks before pushing |
 | Vague PR title | Use clear, descriptive titles |
+| Writing issue/PR content in your native language | GitHub is public — write public content in English; private notes may stay in your native language |
 | Ignoring CI failures | Fix them before asking for review |
 | Merging without approval | Wait for maintainer approval |
 | Using the UI "Sync fork" button | It merges upstream into your default branch (`main`), adding conflict risk there; sync via CLI into a buffer branch, then fast-forward `main` |

@@ -1,6 +1,6 @@
 # xAI Grok Model Catalog
 
-> **Source:** [xAI Models & Pricing](https://docs.x.ai/developers/models) · [xAI Pricing](https://docs.x.ai/developers/pricing) · [xAI API](https://x.ai/api) · [OpenRouter](https://openrouter.ai/x-ai/grok-4.5) · **Verified:** 2026-07-11
+> **Source:** [xAI Models & Pricing](https://docs.x.ai/developers/models) · [xAI Pricing](https://docs.x.ai/developers/pricing) · [xAI API](https://x.ai/api) · [OpenRouter](https://openrouter.ai/x-ai/grok-4.6) · **Verified:** 2026-08-15
 >
 > **Note:** xAI was acquired by SpaceX and is now branded **SpaceXAI** in developer docs and API console. API endpoint (`api.x.ai`) and pricing are unchanged. Model IDs unchanged.
 
@@ -8,7 +8,31 @@
 
 ## Current Models
 
-### Grok 4.5 (Released 2026-07-09) — Current Flagship 🆕 NEW
+### Grok 4.6 (Released 2026-08-12) — Current Flagship 🆕 NEW
+
+xAI's newest flagship and the model xAI now recommends for "code and everything else": agentic tool calling, minimal hallucinations, configurable reasoning, text + image input. Standard and long-context input/output rates **match Grok 4.5**; **cached input is ~67% more expensive** at both context tiers. 500K context window. Knowledge cutoff: **February 1, 2026**.
+
+| Metric | Short context (<200K) | Long context (≥200K) |
+|---|---|---|
+| API names | `grok-4.6` · `grok-4.6-latest` | — |
+| Context window | 500,000 tokens | — |
+| Input | **$2.00 / 1M** | $4.00 / 1M |
+| Cached input | **$0.50 / 1M** | $1.00 / 1M |
+| Output | **$6.00 / 1M** | $12.00 / 1M |
+| Reasoning effort | Configurable | — |
+
+**Key facts:**
+- Released **2026-08-12** on the xAI (SpaceXAI) API; default model in Grok Build and the model xAI points general "code and everything else" traffic to
+- Same 3:1 output-to-input ratio as Grok 4.5 ($2/$6) — lower than most rivals' 5–6×
+- **No batch discount** for Grok 4.6 (xAI's batch discount is currently limited to grok-4.3 and the grok-4.20 SKUs, at 20%)
+- `logprobs` / `top_logprobs` not supported (silently ignored) — applies to all models `grok-4.20` and newer
+- **Migration note:** cache-heavy Grok 4.5 workloads (repetitive prompts / long conversations) should benchmark before switching — the higher cache-read rate can erase savings. Non-cached work is a drop-in upgrade at identical token rates.
+
+*Source: [xAI Docs — Models](https://docs.x.ai/developers/models) · [xAI Docs — Pricing](https://docs.x.ai/developers/pricing) · [xAI Docs — Grok 4.6 release notes](https://docs.x.ai/developers/release-notes) — verified 2026-08-15*
+
+---
+
+### Grok 4.5 (Released 2026-07-09) — Previous Flagship
 
 xAI's newest and most capable flagship. Co-trained with Cursor, optimized for coding, agentic tasks, and knowledge work. Claimed ~2× token efficiency vs comparable leading models — xAI says it solves tasks in under half the number of steps. Default model in Grok Build. Also available in Cursor on all plans.
 
@@ -18,9 +42,9 @@ xAI's newest and most capable flagship. Co-trained with Cursor, optimized for co
 |---|---|
 | API names | `grok-4.5` · `grok-4.5-latest` · `grok-build-latest` |
 | Context window | 500,000 tokens (higher pricing tier above 200K) |
-| Input | **$2.00 / 1M** |
-| Cached input | **$0.50 / 1M** |
-| Output | **$6.00 / 1M** |
+| Input (short, <200K) | **$2.00 / 1M** (long ≥200K: $4.00 / 1M) |
+| Cached input (short) | **$0.30 / 1M** (long ≥200K: $0.60 / 1M) |
+| Output (short) | **$6.00 / 1M** (long ≥200K: $12.00 / 1M) |
 | Speed | ~80 tokens/second |
 | Reasoning effort | Configurable: `low`, `medium`, `high` (default) |
 

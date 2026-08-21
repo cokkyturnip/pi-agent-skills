@@ -4,6 +4,163 @@ Changes tracked by the Model Tracker agent. Most recent entries first.
 
 ---
 
+## 2026-08-15
+
+### 🆕 Google: Gemini 3.7 Flash GA (2026-08-13) — new workhorse Flash; intro $0.75/$3.75 through end of 2026
+
+**Provider:** [Google](models/google.md)  
+On **2026-08-13**, Google released **Gemini 3.7 Flash** (`gemini-3.7-flash`) — generally available (production-ready), three weeks after [Gemini 3.6 Flash](models/google.md). Google calls it "our most intelligent workhorse model yet for coding and agents." Same 1M context window, 64K max output, multimodal input, and built-in tool suite as 3.6 Flash — the gains are behavioral (coding + agentic benchmarks), not spec changes.
+
+| Metric | Value |
+|---|---|
+| API name | `gemini-3.7-flash` |
+| Context window | 1,000,000 tokens |
+| Max output | 64,000 tokens |
+| Default thinking level | `medium` (tunable: `low` / `medium` / `high`) |
+| Input (intro, through **2026-12-31**) | **$0.75 / 1M** |
+| Output (intro, incl. thinking, through **2026-12-31**) | **$3.75 / 1M** |
+| Context caching (read, intro) | $0.075 / 1M |
+| Context caching storage (intro) | $1.00 / 1M tokens per hour |
+| Standard pricing (from **2027-01-01**) | $1.50 input / $7.50 output / $0.15 cache read |
+
+> 📝 **3.6 Flash gets the same intro rate.** Google is applying the new $0.75/$3.75 introductory rate to **both** Gemini 3.7 Flash **and** Gemini 3.6 Flash through December 31, 2026. (3.6 Flash was already listed at $0.75/$3.75 on the official pricing page — verified 2026-08-01 — so this is a formal extension of the intro window, not a new cut.) From January 1, 2027, both revert to $1.50/$7.50.
+
+**Developer action:** No code change required to upgrade from 3.6/3.5 Flash — swap the model ID to `gemini-3.7-flash`. Budget against the **$1.50/$7.50** standard rate for any workload that outlives 2026. The earlier 2026-07-21 deprecation of `temperature` / `top_p` / `top_k` sampling params still applies to 3.7 Flash.
+
+Updated: `models/google.md`, `comparison.md`  
+*Source: [Gemini API — What's new in Gemini 3.7 Flash](https://ai.google.dev/gemini-api/docs/latest-model) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) — verified 2026-08-15*
+
+---
+
+### 🆕 xAI: Grok 4.6 released (2026-08-12) — new flagship at same $2/$6; cached input up 67% vs 4.5
+
+**Provider:** [xAI](models/xai.md)  
+On **2026-08-12**, xAI (SpaceXAI) released **Grok 4.6** (`grok-4.6`) — the new flagship and the model xAI now recommends for "code and everything else." Standard and long-context input/output rates **match Grok 4.5**, but **cached input is ~67% more expensive** at both context tiers. 500K context window, configurable reasoning, text + image input. Knowledge cutoff: February 1, 2026.
+
+| Metric | Grok 4.6 (new) | Grok 4.5 (prior flagship) |
+|---|---|---|
+| API name | `grok-4.6` · `grok-4.6-latest` | `grok-4.5` · `grok-4.5-latest` |
+| Context | 500,000 tokens | 500,000 tokens |
+| Input (short, <200K) | $2.00 / 1M | $2.00 / 1M |
+| Cached input (short) | **$0.50 / 1M** | $0.30 / 1M |
+| Output (short) | $6.00 / 1M | $6.00 / 1M |
+| Input (long, ≥200K) | $4.00 / 1M | $4.00 / 1M |
+| Cached input (long) | **$1.00 / 1M** | $0.60 / 1M |
+| Output (long) | $12.00 / 1M | $12.00 / 1M |
+
+> 🔧 **Correction (Grok 4.5 cached input):** This catalog previously listed Grok 4.5's cached input at **$0.50/1M**. The official [xAI pricing page](https://docs.x.ai/developers/pricing) confirms Grok 4.5 cached input is **$0.30/1M** (short) / **$0.60/1M** (long). Fixed in `models/xai.md` and `comparison.md`.
+
+**Developer action:** Cache-heavy Grok 4.5 workloads should benchmark before migrating — the higher cache-read rate can erase savings on repetitive/long-conversation traffic. For non-cached work, Grok 4.6 is a drop-in upgrade at identical token rates. xAI lists **no batch discount** for Grok 4.6 (batch discount is currently limited to grok-4.3 and the grok-4.20 SKUs at 20%).
+
+Updated: `models/xai.md`, `comparison.md`  
+*Source: [xAI Docs — Models](https://docs.x.ai/developers/models) · [xAI Docs — Pricing](https://docs.x.ai/developers/pricing) — verified 2026-08-15*
+
+---
+
+### 🆕 OpenAI: GPT-5.6-Cyber launched via Daybreak Red (2026-08-10) — controlled-access cyber model; $12.50/$75
+
+**Provider:** [OpenAI](models/openai.md)  
+On **2026-08-10**, OpenAI launched **GPT-5.6-Cyber** (`gpt-5.6-cyber`) — a fine-tune of [GPT-5.6 Sol](models/openai.md) purpose-trained for advanced, **authorized** cybersecurity work (vulnerability research, exploit validation, pen testing, red teaming, incident response). It is OpenAI's "first large-scale attempt at directly improving capabilities for advanced cybersecurity tasks such as exploit development." **Not self-serve** — access requires approval into the new **Daybreak Red** tier. A companion **Daybreak Blue** tier gives vetted defenders GPT-5.6 Sol with adjusted safeguards.
+
+| Tier | Access | Underlying model | Use case |
+|---|---|---|---|
+| **Daybreak Red** | Approved security teams (SOC 2 Type II / ISO 27001 + SSO/MFA/RBAC/monitoring/IR process) | `gpt-5.6-cyber` | Purpose-trained cyber model: exploit dev, vuln research, validation |
+| **Daybreak Blue** | Broader approved defenders | `gpt-5.6-sol` (safeguards adjusted) | Frontier general model for legitimate defensive work |
+
+**Pricing (per 1M tokens, short context only — no long-context rate published for Cyber):**
+
+| Model | Input | Cached input | Cache write | Output |
+|---|---|---|---|---|
+| `gpt-5.6-cyber` (Daybreak Red) | **$12.50** | $1.25 | $15.625 | **$75.00** |
+| `gpt-5.6-sol` (Daybreak Blue) | $5.00 | $0.50 | $6.25 | $30.00 |
+
+> 📝 **Aliases:** `daybreak-red-latest` → `gpt-5.6-cyber` and `daybreak-blue-latest` → `gpt-5.6-sol`. OpenAI will repoint these to future Daybreak models as they ship, with pricing adjusted to match. **Completion rate** (OpenAI internal, not answer accuracy): GPT-5.6 Cyber 95.0% vs GPT-5.5 Cyber 57.3% vs Sol (Blue) 2.0% vs standard Sol 1.5% on advanced cyber requests.
+
+**Developer action:** Not applicable to general API consumers — Daybreak is gated. Apply via OpenAI's Trusted Access for Cyber form. Daybreak models are now also available on AWS (announced 2026-08-11).
+
+Updated: `models/openai.md`  
+*Source: [OpenAI — Expanding Daybreak as the Cyber Defense Window Narrows](https://openai.com/index/expanding-daybreak-as-the-cyber-defense-window-narrows/) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) · [VentureBeat](https://venturebeat.com/technology/openai-launches-gpt-5-6-cyber-with-reduced-refusals-95-completion-on-advanced-cybersecurity-tasks) — verified 2026-08-15*
+
+---
+
+### 🆕 OpenAI: Ultrafast mode preview (2026-08-13) — GPT-5.6 Sol at up to 14× Standard speed, 750 tok/s, Cerebras-powered; invite-only
+
+**Provider:** [OpenAI](models/openai.md)  
+On **2026-08-13**, OpenAI previewed **Ultrafast** — a new service tier (above [Fast mode](models/openai.md)) that runs **GPT-5.6 Sol** at up to **14× the speed of Standard processing**, generating up to **750 output tokens per second**. Powered by **Cerebras** wafer-scale silicon (model layers distributed across multiple wafers, tokens pipelined without off-chip bus hops).
+
+| Metric | Value |
+|---|---|
+| Model | GPT-5.6 Sol (same model, new serving tier) |
+| Peak output speed | up to **750 tokens/sec** |
+| Speed multiple | up to **14×** Standard (OpenAI's framing; baseline undisclosed) |
+| Pricing | **Not published** |
+| GA date | **Not announced** |
+| Separate model ID | **No** — a service-tier selection on `gpt-5.6-sol` |
+| Availability | **Limited preview, invite-only** (select customers in coding, financial research, voice AI, e-commerce) |
+
+**Cerebras performance claims (vendor-measured, not independent):** GPT-5.6 Sol Ultrafast answered all 2,500 Humanity's Last Exam questions in 11h11m vs Claude Fable 5's 78h27m (~7× faster at comparable accuracy, xhigh reasoning); 5.6× end-to-end speedup on GDP-Val with no quality degradation; 11× faster than Fable 5 and 5× faster than Opus 4.8 Fast mode on output speed (per Artificial Analysis figures).
+
+**Developer action:** Sign up for access updates at [openai.com/form/ultrafast](https://openai.com/form/ultrafast/). Expect Cerebras capacity to expand through the rest of 2026; AWS Bedrock availability targeted for Q1 2027. Treat the 14× figure as a marketing ceiling until you measure your own prompts. Distinct from **Fast mode** (`service_tier: "fast"`, 2.5× speed, 2× price) — Ultrafast is a higher, Cerebras-backed tier.
+
+Updated: `models/openai.md`  
+*Source: [OpenAI — Previewing Ultrafast mode](https://openai.com/index/previewing-ultrafast/) · [Cerebras — Accelerating GPT-5.6 Sol Ultrafast](https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai) — verified 2026-08-15*
+
+---
+
+### 💲 DeepSeek: Peak/off-peak pricing ACTIVATED — effective 2026-08-16 16:00 UTC; rates up to ~5× current on cache hits
+
+**Provider:** [DeepSeek](models/deepseek.md)  
+DeepSeek has **set the activation date** for its previously-announced time-of-day billing: **2026-08-16 at 16:00 UTC**. (This catalog's prior note that peak/off-peak was "still NOT activated" is now superseded.) Peak hours are **01:00–04:00 & 06:00–10:00 UTC**; all other hours are off-peak. **Peak rates = 2× off-peak.** Both off-peak and peak rates are **higher than the current flat rates** — the increase ranges from ~50% to ~1,100% depending on model and token type (cache hits hit hardest). The `deepseek-v4-pro` model version also advanced to **DeepSeek-V4-Pro-0813**.
+
+| Model | Token type | Current (flat) | New OFF-PEAK | New PEAK (2×) |
+|---|---|---|---|---|
+| `deepseek-v4-flash` | Input (cache hit) | $0.0028 | $0.007 | $0.014 |
+| `deepseek-v4-flash` | Input (cache miss) | $0.14 | $0.22 | $0.44 |
+| `deepseek-v4-flash` | Output | $0.28 | $0.66 | $1.32 |
+| `deepseek-v4-pro` | Input (cache hit) | $0.003625 | $0.022 | $0.044 |
+| `deepseek-v4-pro` | Input (cache miss) | $0.435 | $0.66 | $1.32 |
+| `deepseek-v4-pro` | Output | $0.87 | $1.98 | $3.96 |
+
+**Developer action:** This is a material cost increase — especially for **cache-hit-heavy / long-conversation workloads on V4-Pro** (cache hit rises from $0.003625 to $0.022 off-peak, ~6×). Options: (1) shift traffic to **off-peak hours** (avoid 01:00–04:00 & 06:00–10:00 UTC); (2) re-evaluate V4-Pro vs V4-Flash routing; (3) compare against budget alternatives (Gemini 3.1 Flash-Lite $0.125/$0.75, GPT-4.1 Nano $0.10/$0.40). Continued API usage after 16:00 UTC Aug 16 = acceptance of new pricing. DeepSeek supports both OpenAI- and Anthropic-compatible API formats, so failover to another provider needs only an endpoint/model swap.
+
+Updated: `models/deepseek.md`, `comparison.md`  
+*Source: [DeepSeek API Docs — Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing) · [Reuters — DeepSeek raises API pricing for its V4 models](https://www.reuters.com/world/china/deepseek-raises-api-pricing-its-v4-models-2026-08-13) — verified 2026-08-15*
+
+---
+
+### 📝 Anthropic: Invisible watermarks on all new Claude models (since 2026-08-02) — applies to API output globally
+
+**Provider:** [Anthropic](models/anthropic.md)  
+On **2026-08-02** (announced 2026-08-11), Anthropic began embedding **invisible, machine-readable watermarks directly into generated text** for every Claude model launched on or after that date. The move fulfills Anthropic's commitment under **EU AI Act Article 50** (transparency for AI-generated content), but Anthropic says the marking **applies globally** — not just in the EU — across **Claude.ai, the Anthropic API, Claude Code, Claude Cowork, and Claude Tag**, plus cloud partners **AWS, Google Cloud, and Microsoft Foundry**.
+
+| Aspect | Detail |
+|---|---|
+| Effective for | Claude models **launched on or after 2026-08-02** |
+| Coverage | Text (invisible watermark woven into the text); images/files (signed provenance metadata for SVG/PNG/JPG) |
+| Scope | Worldwide, all access surfaces (API included) |
+| Older models | Being retrofitted during a "standard regulatory transition period" — no firm date yet |
+| Survives | Copy/paste and some editing (the mark is part of the text itself, not metadata) |
+| Does **not** affect | Meaning, quality, or readability of output |
+
+**Caveat (Anthropic):** Presence of a watermark indicates a file/passage was *processed by Claude*, not that it was entirely AI-written (users often have Claude proofread/format human drafts). Absence does not prove Claude was uninvolved. Very short passages, heavy paraphrasing, or translation can make detection unreliable; file metadata can be stripped via re-saving/screenshots/conversion.
+
+**Developer action:** No API parameter change — watermarking is automatic on eligible models. Relevant for compliance/forensics pipelines and for any downstream content-provenance checks. Existing models in this catalog that launched **before** 2026-08-02 (e.g., [Claude Opus 5](models/anthropic.md) on 2026-07-24, [Fable 5](models/anthropic.md) on 2026-06-09) do **not** yet carry the mark unless/until retrofitted.
+
+Updated: `models/anthropic.md`  
+*Source: [Anthropic Support — How Claude marks AI-generated content](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content) · [CNET](https://www.cnet.com/tech/services-and-software/anthropics-claude-will-add-watermarks-to-ai-generated-text-and-files/) · [Trending Topics](https://www.trendingtopics.eu/anthropic-plans-watermarks-for-ai-generated-content-from-august-2026/) — verified 2026-08-15*
+
+---
+
+### 🆕 OpenAI: o3 retiring from ChatGPT on 2026-08-26 (API unaffected)
+
+**Provider:** [OpenAI](models/openai.md)  
+Per OpenAI's ChatGPT Enterprise rate card, **OpenAI o3 will be retired from ChatGPT on 2026-08-26** (≈11 days from today). Until retirement, existing o3 token rates in ChatGPT continue to apply. **This is a ChatGPT-only change — API access to o3 is unaffected.** See [deprecated.md](deprecated.md).
+
+Updated: `deprecated.md`  
+*Source: [OpenAI Help Center — ChatGPT Rate Card (Enterprise)](https://help.openai.com/en/articles/20001415-chatgpt-rate-card-enterprise-token-based-pricing) — verified 2026-08-15*
+
+---
+
 ## 2026-08-08
 
 ### ✅ Anthropic: Claude Opus 4.1 RETIRED on 2026-08-05 — calls now return errors
