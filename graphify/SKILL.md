@@ -154,18 +154,27 @@ Skip this step entirely if `detect` returned zero `video` files. When the corpus
 
 This step has two parts: **structural extraction** (deterministic, free) and **semantic extraction** (LLM, costs tokens).
 
-> **graphify needs no API key. Never ask the user for one, and never block on one.** Code is extracted structurally (AST) with no LLM and no key at all — a code-only corpus (the common `/graphify .` on a repo) skips semantic extraction entirely, so it needs nothing here: go straight to Part A and skip Part B. Semantic extraction (only for docs, papers, and images) uses Gemini **only if** `GEMINI_API_KEY`/`GOOGLE_API_KEY` is already set; otherwise the host agent itself is the LLM. graphify does **not** read `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or any other provider key. If you catch yourself about to prompt for, wait on, or stop because of a missing API key, that is a misread of this skill — proceed without one.
+> **graphify needs no API key. Never ask the user for one, and never block on one.** Code is extracted structurally (AST) with no LLM and no key at all — a code-only corpus (the common `/graphify .` on a repo) skips semantic extraction entirely, so it needs nothing here: go straight to Part A and skip Part B. Semantic extraction (only for docs, papers, and images) uses the explicitly selected backend below, or the host agent when no external backend is configured.
 
-**Before semantic extraction:** check whether `GEMINI_API_KEY` or `GOOGLE_API_KEY` is set. If neither is set, print this one-liner to the user:
-> Tip: set `GEMINI_API_KEY` or `GOOGLE_API_KEY` to use Gemini for semantic extraction (`pip install 'graphifyy[gemini]'`).
+**Before semantic extraction:** resolve the backend in this order:
 
-Print it once, then continue — do not wait for the user to supply a key. If `GEMINI_API_KEY` or `GOOGLE_API_KEY` IS set, use `graphify.llm.extract_corpus_parallel(files, backend="gemini")` for semantic extraction instead of dispatching subagents. The default Gemini model is `gemini-3-flash-preview`; set `GRAPHIFY_GEMINI_MODEL` or pass `--model` in headless CLI flows to override it.
+1. If `GRAPHIFY_BACKEND` is set, use it. Supported values are `gemini`, `kimi`, `claude`, `openai`, `deepseek`, and `ollama`.
+2. Otherwise, if `OLLAMA_BASE_URL`, `OLLAMA_HOST`, or `OLLAMA_API_KEY` is set, use `ollama`. This is the preferred path for Ollama Cloud and local Ollama cloud-model gateways.
+3. Otherwise, if `OPENAI_API_KEY` and `OPENAI_BASE_URL` are set, use `openai` for OpenAI-compatible providers.
+4. Otherwise, use the host Pi agent as the semantic extractor. Do not automatically select Google or Gemini, and do not ask the user for an API key.
 
-> **No other API keys are read.** When `GEMINI_API_KEY`/`GOOGLE_API_KEY` are unset, semantic extraction falls to the host agent itself — the running session is the LLM. On a host that dispatches subagents (e.g. Claude Code), dispatch them as written in Part B. On a host that runs the CLI directly in a terminal and cannot dispatch subagents, do not stall: a code-only corpus has no semantic work, so write the empty semantic file (Part B "Fast path") and continue to Part C; for a corpus with docs/papers/images, either set a Gemini key or extract those inline yourself, but in no case prompt for `ANTHROPIC_API_KEY` — that prompt is a misread of this skill.
+**Secret handling:** when checking or reporting provider configuration, show only `SET` or `UNSET` for API keys. Never print, echo, interpolate, persist, or include an API key value in command output, graph data, reports, logs, or prompts.
 
-**Run Part A (AST) and Part B (semantic) in parallel. Dispatch all semantic subagents AND start AST extraction in the same message. Both can run simultaneously since they operate on different file types. Merge results in Part C as before.**
+When an external backend is selected, use `graphify.llm.extract_corpus_parallel(files, backend=BACKEND, model=MODEL)` instead of dispatching semantic subagents. Resolve `MODEL` from the backend's supported environment variable or the explicit `--model` value. For the preferred `ollama` backend, graphify reads `OLLAMA_BASE_URL`, `OLLAMA_HOST`, `OLLAMA_API_KEY`, and `OLLAMA_MODEL`. Use `OLLAMA_BASE_URL=https://ollama.com/v1` with an Ollama Cloud API key, or `OLLAMA_BASE_URL=http://localhost:11434/v1` when the local Ollama installation handles Cloud authentication. Set `GRAPHIFY_OLLAMA_VISION=1` for image/PDF-scan extraction and select a vision-capable model such as `gemma4:31b-cloud` or another model marked with vision in Ollama. The Ollama backend uses one concurrent request by default; keep that limit for Free-tier accounts.
 
-Note: Parallelizing AST + semantic saves 5-15s on large corpora. AST is deterministic and fast; start it while subagents are processing docs/papers.
+If no external backend is configured, print once:
+> No external graphify backend configured; using the host Pi agent for semantic extraction.
+
+Then continue without waiting. If `GRAPHIFY_BACKEND=gemini` is explicitly selected, require `GEMINI_API_KEY` or `GOOGLE_API_KEY` and use the Gemini backend. Never silently fall back to Gemini. If the host runs directly in a terminal and cannot dispatch subagents, do not stall: a code-only corpus has no semantic work, so write the empty semantic file (Part B "Fast path") and continue to Part C; for docs, papers, or images, extract those inline with the host agent.
+
+**Run Part A (AST) and Part B (semantic) in parallel when the host supports parallel work.** With an external backend, start AST extraction alongside `extract_corpus_parallel`. Without an external backend, use the host-agent fallback and keep the same JSON contract. Merge results in Part C as before.
+
+Note: Parallelizing AST + semantic saves 5-15s on large corpora. AST is deterministic and fast; start it while semantic extraction is processing docs/papers.
 
 #### Part A - Structural extraction for code files
 

@@ -2,7 +2,7 @@
 
 A living knowledge base of LLM API specs, pricing, and changes — maintained automatically by the Model Tracker agent.
 
-**Last updated:** 2026-08-08
+**Last updated:** 2026-08-29
 
 ---
 
@@ -18,7 +18,7 @@ A living knowledge base of LLM API specs, pricing, and changes — maintained au
 | [models/google.md](models/google.md) | Google — Gemini 3.6 Flash, 3.5 Flash-Lite, 3.1 Pro (preview) |
 | [models/mistral.md](models/mistral.md) | Mistral AI — Medium 3.5, Small 4, Large 3, Nemo |
 | [models/xai.md](models/xai.md) | xAI — Grok 4.5, Grok 4.3, Grok 4 |
-| [models/deepseek.md](models/deepseek.md) | DeepSeek — V4 Flash + V4 Pro |
+| [models/deepseek.md](models/deepseek.md) | DeepSeek — V4 Flash + V4 Pro + V4 Flash Vision Exp (multimodal) |
 | [models/cohere.md](models/cohere.md) | Cohere — Command A+, Command A, R series |
 | [models/meta.md](models/meta.md) | Meta — Muse Spark 1.2 (API) + Llama 4 Scout/Maverick (open weights) |
 

@@ -1,6 +1,6 @@
 # xAI Grok Model Catalog
 
-> **Source:** [xAI Models & Pricing](https://docs.x.ai/developers/models) · [xAI Pricing](https://docs.x.ai/developers/pricing) · [xAI API](https://x.ai/api) · [OpenRouter](https://openrouter.ai/x-ai/grok-4.6) · **Verified:** 2026-08-15
+> **Source:** [xAI Models & Pricing](https://docs.x.ai/developers/models) · [xAI Pricing](https://docs.x.ai/developers/pricing) · [xAI API](https://x.ai/api) · [OpenRouter](https://openrouter.ai/x-ai/grok-4.6) · **Verified:** 2026-08-22
 >
 > **Note:** xAI was acquired by SpaceX and is now branded **SpaceXAI** in developer docs and API console. API endpoint (`api.x.ai`) and pricing are unchanged. Model IDs unchanged.
 
@@ -23,12 +23,13 @@ xAI's newest flagship and the model xAI now recommends for "code and everything 
 
 **Key facts:**
 - Released **2026-08-12** on the xAI (SpaceXAI) API; default model in Grok Build and the model xAI points general "code and everything else" traffic to
+- **Availability:** SpaceXAI console/API (2026-08-12) · GitHub Copilot (2026-08-14) · **Google Cloud Vertex AI / Vertex Model Garden (2026-08-21)** — same $2/$6 pricing on all channels
 - Same 3:1 output-to-input ratio as Grok 4.5 ($2/$6) — lower than most rivals' 5–6×
 - **No batch discount** for Grok 4.6 (xAI's batch discount is currently limited to grok-4.3 and the grok-4.20 SKUs, at 20%)
 - `logprobs` / `top_logprobs` not supported (silently ignored) — applies to all models `grok-4.20` and newer
 - **Migration note:** cache-heavy Grok 4.5 workloads (repetitive prompts / long conversations) should benchmark before switching — the higher cache-read rate can erase savings. Non-cached work is a drop-in upgrade at identical token rates.
 
-*Source: [xAI Docs — Models](https://docs.x.ai/developers/models) · [xAI Docs — Pricing](https://docs.x.ai/developers/pricing) · [xAI Docs — Grok 4.6 release notes](https://docs.x.ai/developers/release-notes) — verified 2026-08-15*
+*Source: [xAI Docs — Models](https://docs.x.ai/developers/models) · [xAI Docs — Pricing](https://docs.x.ai/developers/pricing) · [xAI Docs — Grok 4.6 release notes](https://docs.x.ai/developers/release-notes) (last updated 2026-08-21) · [Google Cloud — Grok 4.6 on Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models) — verified 2026-08-22*
 
 ---
 

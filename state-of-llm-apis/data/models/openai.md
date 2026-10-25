@@ -1,12 +1,38 @@
 # OpenAI Model Catalog
 
-> **Source:** [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing) · [OpenAI Models](https://platform.openai.com/docs/models) · [OpenAI API Changelog](https://developers.openai.com/api/docs/changelog) · **Verified:** 2026-08-15
+> **Source:** [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing) · [OpenAI Models](https://platform.openai.com/docs/models) · [OpenAI API Changelog](https://developers.openai.com/api/docs/changelog) · **Verified:** 2026-09-12
 
 ---
 
 ## Current Recommended Models
 
-### GPT-5.6 Family (GA – Released 2026-07-09) 🆕 NEW
+### GPT-6 Astra (GA – Released 2026-09-03) 🆕 NEW
+
+OpenAI's **new flagship** and most capable model — built for the hardest end-to-end work: complex reasoning, coding, computer use, research, and document creation. Developed under a new U.S. frontier-model government-review process; also offered through the **Daybreak** cybersecurity program. API access followed on **2026-09-04**.
+
+| Model | API name | Context | Max output | Input | Cached input | Cache writes | Output | Input (long >272K) | Output (long >272K) |
+|---|---|---|---|---|---|---|---|---|---|
+| GPT-6 Astra | `gpt-6-astra` | 1.05 M tokens (max input 922K) | 128 K | **$10.00** | $1.00 | $12.50 | **$50.00** | $20.00 | $75.00 |
+
+**Key facts:**
+- Released **2026-09-03** (API GA **2026-09-04**); knowledge cutoff **2026-04-30**
+- **Input modalities:** text, image · **Output:** text
+- **Reasoning effort:** `low`, `medium`, `high`, `xhigh`, `max`
+- **Long-context rule (>272K input):** 2× input/cache rates + **1.5× output** for the **full request**. Cache writes billed at **1.25× uncached input**.
+- **Pricing tiers:** Batch/Flex 50% off Standard; **Fast mode 2× applicable rates**.
+- **Endpoints:** Chat Completions, Responses, Batch supported. ❌ **Not supported:** Realtime/Live, Assistants, Fine-tuning, Embeddings, image/video/speech generation, audio transcription/translation.
+- **Tools (Responses API):** web_search, file_search, image_generation, code_interpreter, hosted_shell, apply_patch, skills, computer_use, mcp, tool_search
+- **Benchmarks (OpenAI self-reported):** Terminal-Bench 4.0 57.7% · DeepSWE v1.1 74.1% · Terminal-Bench-Science 0.1 64.6% · GPQA Diamond 96.0% · BrowseComp 91.5% · OSWorld 2.0 72.6% (offline partial) · ARC-AGI-3 99.9% · ExploitBench 100% · Agents' Last Exam 59.3%
+- **Price positioning:** $10/$50 matches [Claude Fable 5.1](anthropic.md) and is **2.5× the GPT-5.6 Sol promo rate** ($4/$20). Per Artificial Analysis, Astra ties Fable 5.1 on the Intelligence Index at ~40% of the cost and on the Coding Agent Index at ~60% of the cost.
+- Also offered via **Daybreak** (cybersecurity program) alongside [GPT-5.6 Cyber](#gpt-56-cyber--daybreak-tiers-2026-08-10); see Daybreak section below.
+
+**Developer guidance:** Astra is OpenAI's top tier for the hardest agentic/coding/research work. For most production workloads, [GPT-5.6 Sol](#gpt-56-family-ga--released-2026-07-09--new-new) ($4/$20 promo) or [Terra](#gpt-56-family-ga--released-2026-07-09--new-new) ($2/$12) remain far cheaper at near-frontier quality — only step up to Astra when you need the extra capability. Astra does **not** support fine-tuning or realtime/voice.
+
+*Source: [OpenAI — GPT-6 Astra](https://openai.com/index/gpt-6-astra/) · [OpenAI model page — gpt-6-astra](https://developers.openai.com/api/docs/models/gpt-6-astra) · [OpenAI API pricing](https://developers.openai.com/api/docs/pricing) — verified 2026-09-12*
+
+---
+
+### GPT-5.6 Family (GA – Released 2026-07-09) 🆕
 
 OpenAI's latest generation, introducing a three-tier naming system: **Sol** (flagship), **Terra** (balanced), and **Luna** (cost-efficient). This naming convention replaces the single-model-per-generation pattern — each tier can now advance independently. Launched following a limited government-review preview period (from June 26) under a new U.S. executive order requiring 30-day government review of frontier AI models.
 
@@ -14,17 +40,17 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 
 | Model | API name | Context | Input | Cache write | Cache read | Output | Input (long >272K) | Output (long >272K) | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| GPT-5.6 Sol | `gpt-5.6-sol` | 1 M tokens | $5.00 | $6.25 | $0.50 | $30.00 | $10.00 | $45.00 | Flagship; hard reasoning, coding, security, agentic |
+| GPT-5.6 Sol | `gpt-5.6-sol` | 1 M tokens | **$4.00** | $5.00 | $0.40 | **$20.00** | $8.00 | $30.00 | Flagship; hard reasoning, coding, security, agentic |
 | GPT-5.6 Sol Pro | `gpt-5.6-sol-pro` | 1 M tokens | $30.00 | — | — | $180.00 | $60.00 | $270.00 | Highest capability; complex tasks, long workflows |
-| GPT-5.6 Terra | `gpt-5.6-terra` | 1 M tokens | $2.50 | $3.125 | $0.25 | $15.00 | $5.00 | $22.50 | Balanced; competitive with GPT-5.5 at 2× lower cost |
-| GPT-5.6 Luna | `gpt-5.6-luna` | 1 M tokens | $1.00 | $1.25 | $0.10 | $6.00 | $2.00 | $9.00 | Fast, affordable; high-volume and simple tasks |
+| GPT-5.6 Terra | `gpt-5.6-terra` | 1 M tokens | **$2.00** | $2.50 | $0.20 | **$12.00** | $4.00 | $18.00 | Balanced; competitive with GPT-5.5 at lower cost |
+| GPT-5.6 Luna | `gpt-5.6-luna` | 1 M tokens | **$0.20** | $0.25 | $0.02 | **$1.20** | $0.40 | $1.80 | Fast, affordable; high-volume and simple tasks |
 | GPT-5.6 Cyber | `gpt-5.6-cyber` | — | $12.50 | $1.25 | $15.625 | $75.00 | — | — | ⚠️ **Controlled access (Daybreak Red)** — cyber fine-tune of Sol; no long-context rate published |
 
 **Key facts:**
 - Limited preview launched **2026-06-26** (government-coordinated); GA rollout began **2026-07-09**
-- **Sol** = same price as GPT-5.5 ($5/$30) but improved capability; fewer hallucinations
-- **Terra** = performance competitive with GPT-5.5 at half the price ($2.50/$15) — 16% fewer tokens on agent tasks
-- **Luna** = new lowest-cost OpenAI tier at $1/$6 — defends against cheap competitors
+- **Sol** = $4/$20 (promotional, through at least **2026-11-21**) — improved capability over GPT-5.5 at a lower price; fewer hallucinations
+- **Terra** = $2/$12 (permanent since 2026-07-30) — performance competitive with GPT-5.5 at lower cost; 16% fewer tokens on agent tasks
+- **Luna** = $0.20/$1.20 (permanent since 2026-07-30, −80%) — lowest-cost OpenAI tier; defends against cheap competitors
 - Reasoning effort: `low`, `medium` (default), `high`, `max` (max = `ultra` in Codex; available on Sol); `max` runs with 4 parallel subagents in multi-agent mode
 - **ChatGPT routing:** Plus/Pro/Business/Enterprise access Sol via medium+ effort settings; Free/Go access Terra in ChatGPT Work and Codex; all four plans access all three tiers in Codex
 - GPT-5.5 Instant remains the default for ChatGPT fast everyday responses; Sol powers Medium/High/Extra High effort
@@ -34,13 +60,15 @@ OpenAI's latest generation, introducing a three-tier naming system: **Sol** (fla
 - ARC-AGI-3 scores: Sol 7.78%, Terra 0.8%, Luna 0.18% (vs GPT-5.5 0.43%, Claude Opus 4.8 1.5%, Gemini 3.1 Pro Preview 0.42%)
 - Available across ChatGPT, Codex, and OpenAI API; Microsoft 365 Copilot using GPT-5.6 as preferred model
 
-**Pricing tiers:** Batch/Flex: 50% off; Priority/Fast: 2.5× standard rate. **Long-context pricing (>272K tokens):** Input doubles (2×), output rate also rises — see table above. Confirmed on official pricing page 2026-07-17.
+**Pricing tiers:** Batch/Flex: 50% off; Fast mode: 2× the applicable rate. **Long-context pricing (>272K tokens):** 2× input/cache rates + **1.5× output** for the full request — see table above. Confirmed on official pricing page 2026-09-12.
+
+> 🆕 **GPT-5.6 price cuts (2026-07-30 + 2026-08-21):** **Terra** and **Luna** were permanently cut on 2026-07-30 (Terra −20%, Luna −80%). **Sol** was cut on 2026-08-21 (input −20% to $4, output −33% to $20) as a **promotional rate guaranteed through at least 2026-11-21** — applies to the API, Codex credits, and eligible ChatGPT Work plans (subscription prices unchanged; also applies to Fast mode, long-context, and Batch/Flex). Previous rates: Sol $5/$30, Terra $2.50/$15, Luna $1/$6. See [changelog](../changelog.md). Verified 2026-09-12.
 
 > 🆕 **"Priority" renamed to "Fast mode" (2026-07-30):** OpenAI renamed Priority processing to **Fast mode** on 2026-07-30. You can use **either** `service_tier: "priority"` or `service_tier: "fast"` in API requests — both are accepted and equivalent. This is a naming change, not a pricing/behavior change. New code should use `service_tier: "fast"`. See the [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode).
 
 > 🆕 **Fast mode now supports long-context requests (2026-08-05):** Fast mode was extended to long-context prompts for `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna`. Requests **exceeding 272K tokens** can now run in Fast mode — up to **2.5× faster** than the Standard tier. Previously, long-context requests could not use Fast/Priority processing. Long-context (>272K) still bills input at 2× the standard rate; Fast mode still bills at 2× the applicable rate. See [Fast mode guide](https://developers.openai.com/api/docs/guides/fast-mode) and [pricing](https://developers.openai.com/api/docs/pricing). Verified 2026-08-08.
 
-> 🆕 **GPT-5.6-Cyber + Daybreak tiers (2026-08-10):** OpenAI launched **`gpt-5.6-cyber`** — a fine-tune of GPT-5.6 Sol purpose-trained for **authorized** cybersecurity work (vuln research, exploit dev, red teaming). **Not self-serve** — gated behind the new **Daybreak Red** tier (approved security teams; requires SOC 2 Type II / ISO 27001 + SSO/MFA/RBAC/monitoring/IR). **Daybreak Blue** gives vetted defenders `gpt-5.6-sol` with adjusted safeguards. **Pricing (short context only, no long-context rate for Cyber):** Cyber $12.50 in / $1.25 cached / $15.625 cache write / $75 out; Sol (via Blue) $5/$0.50/$6.25/$30. **Aliases:** `daybreak-red-latest` → `gpt-5.6-cyber`, `daybreak-blue-latest` → `gpt-5.6-sol` (repointed as new Daybreak models ship). Internal completion rate on advanced cyber requests: Cyber 95.0% vs Sol(Blue) 2.0% vs standard Sol 1.5%. Daybreak models also available on AWS (2026-08-11). See [changelog](changelog.md). Verified 2026-08-15.
+> 🆕 **GPT-5.6-Cyber + Daybreak tiers (2026-08-10):** OpenAI launched **`gpt-5.6-cyber`** — a fine-tune of GPT-5.6 Sol purpose-trained for **authorized** cybersecurity work (vuln research, exploit dev, red teaming). **Not self-serve** — gated behind the new **Daybreak Red** tier (approved security teams; requires SOC 2 Type II / ISO 27001 + SSO/MFA/RBAC/monitoring/IR). **Daybreak Blue** gives vetted defenders `gpt-5.6-sol` with adjusted safeguards. **Pricing (short context only, no long-context rate for Cyber):** Cyber $12.50 in / $1.25 cached / $15.625 cache write / $75 out; Sol (via Blue) $4/$0.40/$5.00/$20 (follows the Sol promo cut). **Aliases:** `daybreak-red-latest` → `gpt-5.6-cyber`, `daybreak-blue-latest` → `gpt-5.6-sol` (repointed as new Daybreak models ship). Internal completion rate on advanced cyber requests: Cyber 95.0% vs Sol(Blue) 2.0% vs standard Sol 1.5%. Daybreak models also available on AWS (2026-08-11). See [changelog](changelog.md). Verified 2026-08-15.
 
 > 🆕 **Ultrafast mode — limited preview (2026-08-13):** A new service tier **above Fast mode**, running **GPT-5.6 Sol** at up to **14× Standard speed** / **750 output tokens per second**, powered by **Cerebras** wafer-scale silicon. **Invite-only** limited preview — **no published price, no GA date, no separate model ID** (it is a serving-tier selection on `gpt-5.6-sol`). Vendor-measured (not independent): ~7× faster than Claude Fable 5 on Humanity's Last Exam at comparable accuracy (xhigh); 5.6× GDP-Val speedup with no quality loss. Sign up at [openai.com/form/ultrafast](https://openai.com/form/ultrafast/); Cerebras capacity expands through 2026, AWS Bedrock targeted Q1 2027. Distinct from Fast mode (`service_tier: "fast"`, 2.5× speed, 2× price). Verified 2026-08-15.
 
@@ -263,7 +291,8 @@ Cached input tokens are charged at **10% of standard input price** for most mode
 
 ## Notes for Developers
 
-- **`gpt-5.6-sol`** is the new top-tier model (GA 2026-07-09), matching GPT-5.5 pricing ($5/$30) with improved capability. **`gpt-5.6-terra`** ($2.50/$15) is the best value at GPT-5.5-class performance for half the price. **`gpt-5.6-luna`** ($1/$6) is the cheapest capable OpenAI model.
+- **`gpt-6-astra`** ($10/$50, GA 2026-09-03) is OpenAI's new top-tier flagship — use it for the hardest agentic/coding/research work. For most production workloads it is overkill vs the GPT-5.6 family below.
+- **`gpt-5.6-sol`** ($4/$20, promotional through at least 2026-11-21) is the best-value frontier OpenAI model — improved capability over GPT-5.5 at a lower price. **`gpt-5.6-terra`** ($2/$12, permanent) is the value pick at GPT-5.5-class performance. **`gpt-5.6-luna`** ($0.20/$1.20, permanent) is the cheapest capable OpenAI model.
 - ⚠️ **New caching model for GPT-5.6+:** cache writes now billed at 1.25× uncached input rate; cache reads still 10% of input. Budget accordingly.
 - `gpt-5.5` is still available and `chat-latest` alias points to GPT-5.5 Instant (ChatGPT default since 2026-05-05)
 - `gpt-5.4` remains the best value for agentic and computer-use tasks (same context, half the price of 5.5)

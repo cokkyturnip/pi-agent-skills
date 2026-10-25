@@ -1,12 +1,45 @@
 # Google Gemini Model Catalog
 
-> **Source:** [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Vertex AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) · [Gemini Deprecations](https://ai.google.dev/gemini-api/docs/deprecations) · [What's new in Gemini 3.7 Flash](https://ai.google.dev/gemini-api/docs/latest-model) · **Verified:** 2026-08-15
+> **Source:** [Gemini API Pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Vertex AI Pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing) · [Gemini Deprecations](https://ai.google.dev/gemini-api/docs/deprecations) · [What's new in Gemini 3.8 Flash](https://ai.google.dev/gemini-api/docs/latest-model) · [Gemini 3.5 Transcribe docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-transcribe) · **Verified:** 2026-09-12
 
 ---
 
-## Current Models (Gemini 3.7 — Latest Generation)
+## Current Models (Gemini 3.8 — Latest Generation)
 
-### Gemini 3.7 Flash (Released 2026-08-13 — GA) 🆕 NEW
+### Gemini 3.8 Flash (Released 2026-09-02 — GA) 🆕 NEW
+
+Google's **most intelligent Flash-tier model**, engineered for long-horizon software engineering, autonomous agents, and complex enterprise workflows. Built on [Gemini 3.7 Flash](#gemini-37-flash-released-2026-08-13--ga--new); the default model for Managed Agents — the Antigravity agent and Antigravity SDK now use Gemini 3.8 Flash by default.
+
+| Metric | Value |
+|---|---|
+| API name | `gemini-3.8-flash` |
+| Context window | 1,048,576 tokens (~1 M) |
+| Max output | 65,536 tokens (64K) |
+| Default thinking level | `medium` (tunable: `low` / `medium` / `high`) |
+| Input (intro, through **2026-12-31**) | **$0.75 / 1M** |
+| Output (intro, incl. thinking, through **2026-12-31**) | **$3.75 / 1M** |
+| Context caching (read, intro) | $0.075 / 1M |
+| Context caching storage (intro) | $1.00 / 1M tokens per hour |
+| Standard pricing (from **2027-01-01**) | $1.50 input / $7.50 output / $0.15 cache read / $1.00 per hour storage |
+| Input modalities | text, image, video, audio, PDF · Output: text |
+| Free tier | Not specified at launch (paid) |
+
+**Key facts:**
+- Released **2026-09-02** (GA, production-ready) — ~3 weeks after 3.7 Flash
+- **Intro pricing ($0.75/$3.75) is shared** with [Gemini 3.6 Flash](#gemini-36-flash-released-2026-07-21--ga) and [Gemini 3.7 Flash](#gemini-37-flash-released-2026-08-13--ga--new) through Dec 31, 2026; all three revert to $1.50/$7.50 on Jan 1, 2027
+- By design, **3.8 Flash can use more tokens on complex tasks** (smaller reasoning steps, iterative tool calls, self-verification) — lower the thinking level for everyday work to cut token use; [Gemini 3.7 Flash](#gemini-37-flash-released-2026-08-13--ga--new) remains fully supported as the lower-token alternative
+- Same built-in tool suite as 3.7 Flash (caching, code execution, computer use in preview, file search, function calling, Google Maps/Search grounding, structured outputs, URL context, thinking); same 2026-07-21 deprecation of `temperature` / `top_p` / `top_k` sampling params applies
+- Live in Google AI Studio, Gemini API, Vertex AI / Gemini Enterprise Agent Platform, Antigravity, OpenRouter, Cursor
+- **Benchmarks (Artificial Analysis / public):** GPQA Diamond **95.3%** · Coding Index **76.3%** · Intelligence Index **47.1%**
+- **Migration:** drop-in from 3.7/3.6 Flash — change the model ID to `gemini-3.8-flash`. For the absolute cheapest per-token Gemini work, [3.1 Flash-Lite](#gemini-31-flash-lite) ($0.125/$0.75) remains lower
+
+> ⚠️ **Budget against the standard rate.** The intro price expires 2026-12-31. Any workload that outlives 2026 should be modeled at **$1.50/$7.50**.
+
+*Source: [Gemini API — What's new in Gemini 3.8 Flash](https://ai.google.dev/gemini-api/docs/latest-model) (last updated 2026-09-03 UTC) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) · [DeepMind model card — Gemini 3.8 Flash](https://deepmind.google/models/model-cards/gemini-3-8-flash) — verified 2026-09-12*
+
+---
+
+### Gemini 3.7 Flash (Released 2026-08-13 — GA)
 
 Google's newest and most capable **Flash-tier workhorse** — "our most intelligent workhorse model yet for coding and agents." Same 1M context window, 64K max output, multimodal input, and built-in tool suite as [Gemini 3.6 Flash](#gemini-36-flash-released-2026-07-21--ga--new); the gains are behavioral (large jumps on coding/agentic benchmarks), not spec changes. Ships three weeks after 3.6 Flash. **Gemini 3.5 Pro remains unreleased** (still in development) — Flash is where Google is shipping new engineering first.
 
@@ -197,6 +230,34 @@ Real-time speech-to-speech translation model. Automatically detects 70+ input la
 **Best for:** Multilingual voice calls, meetings, live translation workflows. Near-real-time with natural-sounding speech and no awkward pauses.
 
 *Source: [Google Blog — Gemini 3.5 Live Translate](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-live-3-5-translate/) — 2026-06-09 · verified 2026-07-11*
+
+---
+
+### Gemini 3.5 Transcribe (Released 2026-08-26 — public preview) 🆕 NEW
+
+Google's first speech-to-text model sold natively through the Gemini Developer API — **replaces Chirp 3**. Built on Gemini's audio understanding capabilities (DeepMind model card identifies it as based on **Gemini 3 Pro**; no standalone published architecture). Two variants ship in **public preview**, both with a **free tier** (rate-limited).
+
+| Variant | API name | Use case | Audio input | Text output | Effective | Max audio | Free tier |
+|---|---|---|---|---|---|---|---|
+| Transcribe (batch/unary) | `gemini-3.5-transcribe` | Pre-recorded audio files | **$2.00 / 1M** (~$0.003/min) | **$12.00 / 1M** (~$0.002/min) | **~$0.005/min** | Up to 1 hour/request *(30 min w/ diarization or word timestamps)* | ✅ |
+| Transcribe Live (streaming) | `gemini-3.5-transcribe-live` | Real-time streaming STT over WebSockets | **$3.50 / 1M** (~$0.005/min) | **$21.00 / 1M** (~$0.004/min) | **~$0.009/min** | 10 min per session | ✅ |
+
+> 📝 **Pricing math:** billed by tokens (25 audio tokens/sec input; 175 text tokens/min output). Batch token rates ($2.00/$12.00) match **Gemini 3.1 Pro**; Live token rates ($3.50/$21.00) are higher. Per-minute figures are Google's blended estimates.
+
+**Capabilities:**
+- **85+ languages**, automatic utterance-level detection + code-switching
+- **Speaker diarization** (up to 8 speakers — **batch only**; 3+ speakers experimental)
+- **Word-level timestamps** (**batch only**; degrades accuracy)
+- **Custom vocabulary biasing** (up to 1,000 terms; ~100 best)
+- **Smart transcription** (filler-word removal, intent-aware alphanumeric formatting) — both variants
+
+**Not supported** on either variant: function calling, context caching, thinking, Batch/Flex/Priority inference tiers, grounding with Google Search.
+
+**Best for:** meeting analytics, call-center review, interview transcription (batch); live captioning, voice agents (streaming). Framework integrations already live: LangChain, LiveKit, Pipecat, Vercel AI SDK. Already powers Gboard Rambler (Android) and "Speak to Window" (Gemini macOS app).
+
+> ⚠️ **Migration:** this is a speech-to-text model, not a text-generation LLM — it does not change the text-model comparison matrix. If you were on **Chirp 3**, migrate to `gemini-3.5-transcribe` (batch) or `gemini-3.5-transcribe-live` (streaming). Compare per-minute cost vs. self-hosted Whisper (cheaper at high English volume) and Deepgram/AssemblyAI (~competitive).
+
+*Source: [Google Blog — Introducing Gemini 3.5 Transcribe](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5-transcribe/) · [Gemini Developer API pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Gemini 3.5 Transcribe model docs](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-transcribe) (last updated 2026-08-26 UTC) · [DeepMind model card — Gemini 3.5 Audio](https://deepmind.google/models/model-cards/gemini-3-5-audio/) — verified 2026-08-29*
 
 ---
 
