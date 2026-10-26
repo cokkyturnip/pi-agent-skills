@@ -72,6 +72,23 @@ A conflict means two machines changed the same file.
 | `git/`, `npm/`, `bin/` | package caches managed by `pi install` | `pi install` again |
 | `models-store.json` | cache | regenerated |
 
+## Shared Skills — Cross-Agent Symlink Technique
+
+For cross-agent skill sharing, use a single shared namespace:
+
+- `~/.agents/skills/<skill-name>` — symlink → source skill dir.
+
+Sources:
+- pi-local: `~/.pi/agent/skills/<name>`
+- package/upstream: `~/.pi/agent/git/github/<org>/<repo>/skills/<name>`
+
+No subfolder indirection (e.g. `~/.agents/upstream/...`); symlink name =
+skill name, target = source.
+
+OS:
+- macOS/Linux: `ln -s <target> ~/.agents/skills/<name>`
+- Windows: `mklink /J <target> ~/.agents/skills/<name>` (directory junction)
+
 ## Credentials (re-auth on a new machine)
 
 - **Notion MCP**: run the `setup-oauth` skill.

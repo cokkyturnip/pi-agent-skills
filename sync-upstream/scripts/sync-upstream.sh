@@ -13,7 +13,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$SCRIPT_DIR/upstreams.json"
 PI_SKILL_DIR="${HOME}/.pi/agent/skills"
-CLAUDE_SKILL_DIR="${HOME}/.claude/skills"
 TMPDIR="${TMPDIR:-/tmp}"
 WORK_TREE="${TMPDIR}/pi-sync-upstream"
 
@@ -73,7 +72,6 @@ sync_skill() {
   fi
 
   local pi_dst="${PI_SKILL_DIR}/${skill}"
-  local claude_dst="${CLAUDE_SKILL_DIR}/${skill}"
   local dest_override
   dest_override=$(parse_config "get-skill-dest" "$upstream" "$skill" || echo ".")
 
@@ -83,25 +81,6 @@ sync_skill() {
   if [[ ! -d "$src" ]]; then
     echo "  $(red "✖") Skill '${skill}' not found in upstream repo at ${src}"
     return 1
-  fi
-
-  # ── Sync scripts/ to ${CLAUDE_SKILL_DIR}/ (runtime)
-  if [[ -d "${src}/scripts" ]]; then
-    if [[ ! -d "${claude_dst}/scripts" ]]; then
-      mkdir -p "${claude_dst}"
-      cp -r "${src}/scripts" "${claude_dst}/"
-      echo "  $(green "✔") scripts/ → ${CLAUDE_SKILL_DIR}/${skill}/ (new)"
-    else
-      local changes
-      changes=$(diff -rq "${src}/scripts" "${claude_dst}/scripts" 2>/dev/null || true)
-      if [[ -n "$changes" ]]; then
-        rsync -a --delete "${src}/scripts/" "${claude_dst}/scripts/"
-        echo "  $(green "✔") scripts/ → ${CLAUDE_SKILL_DIR}/${skill}/ (updated)"
-        echo "  $(dim "${changes}")"
-      else
-        echo "  $(dim "·") scripts/ — no changes"
-      fi
-    fi
   fi
 
   # ── Sync docs/data to ${PI_SKILL_DIR}/ (documentation)
@@ -142,9 +121,14 @@ sync_skill() {
     done
   fi
 
-  if [[ "$pi_changes" == false ]] && [[ ! -d "${src}/scripts" || -z "$(diff -rq "${src}/scripts" "${claude_dst}/scripts" 2>/dev/null || echo "changed")" ]]; then
+  if [[ "$pi_changes" == false ]]; then
     echo "  $(dim "·") up to date"
   fi
+
+  # ── Shared symlink: ~/.agents/skills/<skill> → source
+  # Auto-add shared skill symlink for cross-agent usage
+  mkdir -p "$HOME/.agents/skills"
+  ln -sfn "$src" "$HOME/.agents/skills/$skill"
 }
 
 # ── Main ──
