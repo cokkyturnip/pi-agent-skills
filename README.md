@@ -2,7 +2,7 @@
 
 A collection of modular skills for [Pi](https://github.com/earendil-works/pi), an AI coding agent harness. Skills load on demand: only `name` and `description` sit in the prompt until a task matches.
 
-**Contents:** 19 skill directories, each with a `SKILL.md`. Nothing here is installed automatically.
+**Contents:** 20 skill directories, each with a `SKILL.md`. Nothing here is installed automatically.
 
 ---
 
@@ -74,6 +74,7 @@ A directory containing `SKILL.md` is one skill. A missing `SKILL.md` means an in
 |-------|--------------|
 | **[github-collaboration](github-collaboration/)** | Contribute to an upstream repository via fork, branch and PR. Reads CONTRIBUTING.md, follows repo conventions, watches CI, answers review comments. |
 | **[security-review](security-review/)** | Three-layer security review: pattern warnings, LLM diff review, cross-file data flow. For authentication, authorization, user input, databases, file uploads and API endpoints. |
+| **[find-skills](find-skills/)** | Search the open agent-skills ecosystem (skills.sh) and vet candidates before recommending them. Read-then-copy install policy: it does not run `npx skills add -y`, and it treats a third-party `SKILL.md` as code to review. |
 | **[stop-slop](stop-slop/)** | Remove predictable AI writing patterns from prose: filler phrases, formulaic structures, passive voice, register drift. Comes with reference lists for phrases, structures and before/after examples. |
 
 ### 📝 Notion & project management
@@ -114,6 +115,7 @@ Skills adapted from other projects keep their original license:
 | `state-of-llm-apis` | [janwilmake/state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) | janwilmake |
 | `markitdown` | [microsoft/markitdown](https://github.com/microsoft/markitdown) | Microsoft |
 | `configure-9router` | [decolua/9router](https://github.com/decolua/9router) | decolua |
+| `find-skills` | [vercel-labs/skills](https://github.com/vercel-labs/skills) | vercel-labs |
 | `security-review` | inspired by Anthropic's `security-guidance` and `obra/superpowers` | — |
 
 The remaining skills were written for this collection.
