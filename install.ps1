@@ -18,11 +18,11 @@ $ClaudeSkillDir = "$env:USERPROFILE\.claude\skills"
 
 $Mandatory = @("sync-upstream")
 
-$OurScripts = @("configure-pi", "configure-9router", "youtube-summarizer", "sync-upstream", "project-schedule", "cleanup-sessions")
+$OurScripts = @("configure-pi", "configure-9router", "youtube-summarizer", "sync-upstream", "project-schedule", "pi-cleanup-sessions")
 
 $Skills = @(
   "aws-pricing",          "banner-design",        "brand"
-  "capacity-planning",    "cleanup-sessions",     "configure-9router"
+  "capacity-planning",    "pi-cleanup-sessions",     "configure-9router"
   "configure-pi",         "design",               "design-system"
   "firebase-pricing",     "github-collaboration", "notion"
   "project-schedule",     "proposal-creation",    "security-review"

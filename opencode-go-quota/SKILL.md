@@ -1,6 +1,7 @@
 ---
 name: opencode-go-quota
 description: Check OpenCode Go subscription quota windows (rolling, weekly, monthly) and detect expired OpenCode credentials. Use when asking how much OpenCode Go/Zen quota is used or remaining, when a plan limit or rate limit may be the cause of a failed request, when checking whether an OpenCode Console session or Go API key is still valid, or when setting up quota monitoring/alerting.
+disable-model-invocation: true
 ---
 
 # OpenCode Go Quota

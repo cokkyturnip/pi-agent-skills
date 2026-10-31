@@ -44,7 +44,7 @@ Skills are auto-detected by Pi on startup:
 
 ```bash
 ls ~/.pi/agent/skills/
-# → aws-pricing  banner-design  brand  capacity-planning  cleanup-sessions
+# → aws-pricing  banner-design  brand  capacity-planning  pi-cleanup-sessions
 #   configure-9router  configure-pi  design  design-system  firebase-pricing
 #   github-collaboration  notion  project-schedule  proposal-creation
 #   security-review  slides  state-of-llm-apis  stop-slop  sync-upstream
@@ -104,7 +104,7 @@ This collection contains **24 bundled skills** in `~/.pi/agent/skills/`. Additio
 |-------|-------------|--------|
 | **[configure-9router](configure-9router/)** | 9router model combo management via SQLite — register/whitelist models, manage routing combos, blacklist models, audit usage. Backup automation, pre-edit hooks, inventory tracking. | **Original** (Built on [9router](https://9router.com) CLI) |
 | **[configure-pi](configure-pi/)** | Pi agent configuration backup & restore — settings, skills, auth, extensions. Machine migration tool. Independent from 9router config. | **Original** |
-| **[cleanup-sessions](cleanup-sessions/)** | Session cleanup — retains 20 most recent sessions per project, max 14 days. Keeps Pi lean. | **Original** |
+| **[pi-cleanup-sessions](pi-cleanup-sessions/)** | Session cleanup — retains 20 most recent sessions per project, max 14 days. Keeps Pi lean. | **Original** |
 | **[sync-upstream](sync-upstream/)** *(mandatory)* | Sync Pi skills from upstream repositories. Manage source-of-truth for scripts and documentation. | **Original** |
 
 ### 📝 Notion & Project Management
@@ -126,6 +126,7 @@ This collection contains **24 bundled skills** in `~/.pi/agent/skills/`. Additio
 | Skill | Description | Source |
 |-------|-------------|--------|
 | **[state-of-llm-apis](state-of-llm-apis/)** | Living knowledge base of LLM API specifications, pricing, model comparisons, changelog, and deprecation schedules. Auto-updated daily from official provider docs. Covers OpenAI, Anthropic, Google, Mistral, xAI, DeepSeek, Cohere, Meta. | **Data:** [janwilmake/state-of-llm-apis](https://github.com/janwilmake/state-of-llm-apis) — **Skill wrapper:** Original |
+| **[markitdown](markitdown/)** | Convert PDF, DOCX, PPTX, XLSX, EPUB, MSG, HTML, CSV, JSON, XML, notebooks, audio and ZIP into LLM-friendly Markdown. Documents per-format dependencies, silent-failure signatures (0-byte image output, empty stdin without a format hint) and the OCR/vision paths. | **Tool:** [microsoft/markitdown](https://github.com/microsoft/markitdown) — **Skill:** Original |
 | **[youtube-summarizer](youtube-summarizer/)** | YouTube video summarizer — transcript extraction, multi-fallback strategy (primary: Pi fetch_content, fallback: local Python, final: 9router). Analysis with key themes, arguments, conclusions. | **Original** |
 
 ---
@@ -258,7 +259,7 @@ The following skills were created from scratch for this collection:
 
 - `aws-pricing` — AWS cloud cost estimation workflow
 - `capacity-planning` — Infrastructure capacity sizing & TPS estimation
-- `cleanup-sessions` — Session lifecycle management for Pi
+- `pi-cleanup-sessions` — Session lifecycle management for Pi
 - `configure-9router` — 9router combo management workflow
 - `configure-pi` — Pi config migration tooling
 - `firebase-pricing` — Firebase/Google Cloud cost estimation

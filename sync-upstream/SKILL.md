@@ -1,6 +1,7 @@
 ---
 name: sync-upstream
 description: Sync Pi skills from upstream repositories. Manage source-of-truth for scripts and documentation.
+disable-model-invocation: true
 ---
 
 # Skill: Sync Upstream
