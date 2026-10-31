@@ -10,7 +10,7 @@
 set -uo pipefail
 
 SESSIONS_DIR="${PI_CODING_AGENT_SESSION_DIR:-$HOME/.pi/agent/sessions}"
-LAST_CLEANUP_FILE="$HOME/.pi/agent/skills/sync-upstream/.last_session_cleanup"
+LAST_CLEANUP_FILE="$HOME/.pi/agent/.state/last-cleanup"
 RETAIN_COUNT=20
 RETAIN_DAYS=14
 
@@ -92,5 +92,6 @@ if [[ $failed -gt 0 ]]; then
 fi
 
 # Update last cleanup timestamp only after a clean run
+mkdir -p "$(dirname "$LAST_CLEANUP_FILE")"
 date +%s > "$LAST_CLEANUP_FILE"
 echo "Session cleanup complete ($total_deleted deleted)"

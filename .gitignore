@@ -1,7 +1,7 @@
 # Local config & backups
 configure-9router/backup/
 
-# Upstream scripts — handled by sync-upstream, not tracked here
+# Upstream scripts — handled by pi-sync-upstream, not tracked here
 brand/scripts/
 design/scripts/
 design-system/scripts/

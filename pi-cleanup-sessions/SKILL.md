@@ -39,7 +39,7 @@ The script skips itself if it ran successfully within the last 24 hours. To
 force a run, delete the timestamp first:
 
 ```bash
-rm -f ~/.pi/agent/skills/sync-upstream/.last_session_cleanup
+rm -f ~/.pi/agent/.state/last-cleanup
 ```
 
 Exit code 0 with `Session cleanup complete` means it ran; exit 1 means part of
@@ -53,7 +53,7 @@ The script reports problems instead of failing open:
   `retention NOT applied` and skipped; the remaining projects still run.
 - Any problem makes the script exit non-zero with
   `Session cleanup INCOMPLETE`.
-- `~/.pi/agent/skills/sync-upstream/.last_session_cleanup` is written only
+- `~/.pi/agent/.state/last-cleanup` is written only
   after a clean run, so a failed cleanup retries next session instead of
   being treated as done.
 
